@@ -1,0 +1,25 @@
+{
+  "name": "crazyBalls",
+  "main": "app.js",
+  "version": "0.1.0",
+  "authors": [
+    "vamakin <vamakin@gmail.com>"
+  ],
+  "description": "multiplayer game",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "socket.io": "~1.3.7",
+    "socket.io-client": "~1.3.7"
+  }
+}
