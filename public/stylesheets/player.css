@@ -1,0 +1,36 @@
+.game-field{
+    position: relative;
+    width: 800px;
+    height: 800px;
+}
+.player {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: black;
+    border-radius: 10px;
+    border: 1px solid;
+}
+#player-1 {
+    background-color: red;
+    top: 20px; 
+    left: 20px;
+}
+
+#player-2 {
+    background-color: green;
+    top: 20px; 
+    left: 760px;
+}
+
+#player-3 {
+    background-color: yellow;
+    top: 760px; 
+    left: 20px;
+}
+
+#player-4 {
+    background-color: blue;
+    top: 760px; 
+    left: 760px;
+}

@@ -20,6 +20,10 @@
   ],
   "dependencies": {
     "socket.io": "~1.3.7",
-    "socket.io-client": "~1.3.7"
+    "socket.io-client": "~1.3.7",
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "qrcode-js": "*",
+    "matter-js": "~0.8.0-alpha"
   }
 }
