@@ -1,0 +1,37 @@
+html
+  head
+    title CrazyBalls
+    link(href='/libs/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css')    
+    script(src="libs/jquery/dist/jquery.min.js") 
+    script(src="javascripts/index.js") 
+    
+    link( rel="stylesheet/less" type="text/css" href="stylesheets/less/index.less")    
+    script(src="libs/less/dist/less.min.js" type="text/javascript") 
+    
+    
+  body
+      nav(class='navbar')
+        h1(class='text-center') Crazy Balls
+      div(class='content container text-center')
+        div(class='row')
+          div(class='col-md-12')
+            div(class='play-button')
+              p(class='play-button--text') PLAY
+        div(class='row')    
+          div(class='form-horizontal')    
+            div(class='form-group game-params')
+              label(for='game-type' class='col-md-2 col-md-offset-2 control-label') Game
+              div(class='col-md-4')
+                select(id='game-type' class='form-control')
+                  option(val='Dominator') Dominator
+            div(class='form-group')
+              label(for='players-num' class='col-md-2 col-md-offset-2 control-label') Players
+              div(class='col-md-4')
+                select(id='players-num' class='form-control')
+                  option(val='1') 1
+                  option(val='2') 2
+                  option(val='3') 3
+                  option(val='4' selected="selected") 4
+
+               

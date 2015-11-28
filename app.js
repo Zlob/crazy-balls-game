@@ -4,7 +4,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 app.set('view engine', 'jade');
+app.use(express.static('public'));
 
+///////////////////////////////////////////////////////////////////
 
 var games = {};
 
@@ -17,14 +19,19 @@ Game = function(id, gameSocket){
     }
 }
 
-app.use(express.static('public'));
+
+///////////////////////////////////////////////////////////////////
+
+app.get('/', function(req, res){
+    res.render('index.jade');
+});
 
 app.get('/game/:game_id/player/:player_id', function(req, res){
     res.render('player.jade', { game_id: req.params.game_id, player_id: req.params.player_id});
 });
 
 app.get('/game', function(req, res){
-  res.sendfile('views/game.html');
+  res.render('game.jade', req.query);
 });
 
 
@@ -69,6 +76,7 @@ io.on('connection', function(socket){
     
 });
 
+////////////////////////////////////////////////////////////////////////////
 
 http.listen(9500, function(){
   console.log('listening on *:9500');

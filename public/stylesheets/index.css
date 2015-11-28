@@ -1,0 +1,47 @@
+body{
+    background-color: #8FA8A2;
+}
+
+.navbar{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #50553F;
+    color: #CCD4BD;
+}
+
+.content{
+    height: 600px;
+    background-color: #CCD4BD;
+    border-radius: 15px;
+}
+
+
+.play-button{
+    margin-top:60px;
+    
+    display:inline-block; 
+    width: 150px;
+    height: 150px;
+
+    border: solid 1px black;
+    border-radius: 75px;   
+    
+    line-height: 150px;
+    text-align:center;
+    
+    background-color: #9E3B36;
+}
+
+.play-button:hover{
+    cursor: pointer;
+}
+
+.play-button--text{
+    font-family: 'Press Start 2P', cursive;
+    font-size:30px;
+}
+
+.game-params{
+    margin-top: 60px;
+}
