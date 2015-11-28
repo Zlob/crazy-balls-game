@@ -1,0 +1,45 @@
+html
+  head
+    title #{gameType}
+    
+    link(href='/libs/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css')  
+    script( src="/socket.io/socket.io.js" )
+    script( src="libs/jquery/dist/jquery.min.js" )
+    script( src="libs/qrcode-js/qrcode.js" )
+    script( src="libs/matter-js/build/matter.js" )
+    script( src="javascripts/game.js" )
+
+    
+    link( rel="stylesheet/less" type="text/css" href="stylesheets/less/index.less")    
+    script(src="libs/less/dist/less.min.js" type="text/javascript") 
+body
+    nav(class='navbar')
+      h1(class='text-center') Crazy Balls
+    div(id='players_num' data-store=playersNum)
+    div(id='game-field' class="game-field")
+      div(class='container')
+        div(class='row')
+          div(class='col-md-3 column')
+            div(class='row')
+              div(class='col-md-12 player-area' )
+                a(id='player-area-1' class='player-area--link') 
+                  span(class='qrcode-helper')
+            div(class='row')
+              div(class='col-md-12 player-area')  
+                a(id='player-area-3' class='player-area--link')
+                  span(class='qrcode-helper')
+          div(class='col-md-6 column')
+           
+          div(class='col-md-3 column')
+            div(class='row')
+              div(class='col-md-12 player-area')
+                a(id='player-area-2' class='player-area--link')
+                  span(class='qrcode-helper')
+            div(class='row')
+              div(class='col-md-12 player-area') 
+                a(id='player-area-4')
+                  span(class='qrcode-helper')
+    
+
+    

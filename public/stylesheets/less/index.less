@@ -6,6 +6,8 @@
 @acent-color-dark: #A64B00;
 @acent-color-light: #FF9640;
 
+@row-height: 40%;
+
 @main-font: 'Press Start 2P', cursive;
 
 body{
@@ -20,12 +22,6 @@ body{
     background-color: @main-color-dark;
     color: @main-color-light;
 }
-
-/* .content{
-    height: 600px;
-    background-color: @main-color-light;
-    border-radius: 15px;
-} */
 
 
 .play-button{
@@ -54,4 +50,21 @@ body{
 
 .game-params{
     margin-top: 60px;
+}
+
+.player-area{
+    height: @row-height;
+    text-align:center;
+}
+
+.player-area--link > img{
+    line-height: 150px;
+    display: inline-block !important;
+    vertical-align: middle;
+}
+
+.qrcode-helper{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }

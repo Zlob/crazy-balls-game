@@ -40,18 +40,20 @@ app.get('/game', function(req, res){
 
 io.on('connection', function(socket){
     console.log('connection');
-    socket.on('addGame', function(){
-        console.log('addGame');
+    
+    socket.on('addGame', function(data){
+//         console.log('addGame', data);
+        var players_num = data.players_num;
         var roomNumber = Object.keys(games).length + 1; //Date.now().toString() + Math.random().toString();
         games[roomNumber] = new Game(roomNumber, socket);
+        
         data = {
             roomNumber: roomNumber,
-            links : [
-                'https://neutral-sierra-9500.codio.io/game/'+roomNumber+'/player/'+1,
-                'https://neutral-sierra-9500.codio.io/game/'+roomNumber+'/player/'+2,
-                'https://neutral-sierra-9500.codio.io/game/'+roomNumber+'/player/'+3,
-                'https://neutral-sierra-9500.codio.io/game/'+roomNumber+'/player/'+4,
-            ]
+            links : []
+        }
+        
+        for(var i = 1; i <= players_num; i++){
+            data.links.push('https://neutral-sierra-9500.codio.io/game/'+roomNumber+'/player/'+ i);
         }
         socket.emit('playerLinks', data);   
     })
