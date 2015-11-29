@@ -2,6 +2,9 @@ html
   head
     title player
     link(href='/stylesheets/player.css', rel='stylesheet')
+    script( src="/socket.io/socket.io.js" type='text/javascript')
+    script( src="/libs/jquery/dist/jquery.min.js") 
+    script( src="/javascripts/player.js" type='text/javascript')    
     div(id='game_id') #{game_id}
     div(id='player_id') #{player_id}
   body
@@ -22,5 +25,3 @@ html
             td(id="doDirection")
       div( class="container" style="perspective: 300;")
         img( src="/images/phone.png" id="imgLogo")
-        script( src="/socket.io/socket.io.js" type='text/javascript')
-        script( src="/javascripts/player.js" type='text/javascript')

@@ -1,51 +1,85 @@
-var socket = io();
+var Player = function(game_id, player_id, playerName){
+    
+    this.socket = io();
+    this.game_id = game_id;
+    this.player_id = player_id;   
+    this.playerName = playerName;
+    
+    this.lastSend = Date.now();
+    
+    this.init = function(){
+        var self = this;
+        if (window.DeviceOrientationEvent) {
+            
+            self.sendAddPlayer();           
 
-var game_id = document.getElementById('game_id').innerHTML;
-var player_id = document.getElementById('player_id').innerHTML;
-socket.emit('addPlayer', {game_id: game_id, player_id: player_id});
-
-var deviceOrientationHandler = function(tiltLR, tiltFB, dir){
-    document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
-    document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
-    document.getElementById("doDirection").innerHTML = Math.round(dir);
-    // Apply the transform to the image
-    var logo = document.getElementById("imgLogo");
-    logo.style.webkitTransform =                
-        "rotate3d(0,1,0, "+ (tiltLR)+"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
-}
-var playerAction = function(x, y){
-    var data = {
-        player_id: player_id,
-        game_id: game_id,
-        x: x,
-        y, y
-    }
-    socket.emit('playerMove', data);
-    return false;
-}
-var lastSend = Date.now();
-if (window.DeviceOrientationEvent) {
-    document.getElementById("doEvent").innerHTML = "DeviceOrientation";
-    // Listen for the deviceorientation event and handle the raw data
-    window.addEventListener('deviceorientation', function(eventData) {
-        if(Date.now() - lastSend > 16){
-            console.log('send');
-            lastSend = Date.now();
+            document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+            // Listen for the deviceorientation event and handle the raw data
+            window.addEventListener('deviceorientation', function(eventData) {
+                if(Date.now() - self.lastSend > 16){
+                    console.log('send');
+                    self.lastSend = Date.now();
                     // gamma is the left-to-right tilt in degrees, where right is positive
-        var tiltLR = eventData.gamma;
+                    var tiltLR = eventData.gamma;
 
-        // beta is the front-to-back tilt in degrees, where front is positive
-        var tiltFB = eventData.beta;
+                    // beta is the front-to-back tilt in degrees, where front is positive
+                    var tiltFB = eventData.beta;
 
-        // alpha is the compass direction the device is facing in degrees
-        var dir = eventData.alpha
+                    // alpha is the compass direction the device is facing in degrees
+                    var dir = eventData.alpha
 
-        // call our orientation event handler
-        deviceOrientationHandler(tiltLR, tiltFB, dir);
-        playerAction(tiltLR, tiltFB);
+                    // call our orientation event handler
+                    self.deviceOrientationHandler(tiltLR, tiltFB, dir);
+                    self.playerAction(tiltLR, tiltFB);
+                }
+
+            }, false);
+        } else {
+            document.getElementById("doEvent").innerHTML = "Not supported."
         }
-
-    }, false);
-} else {
-    document.getElementById("doEvent").innerHTML = "Not supported."
+    }
+    
+    this.sendAddPlayer = function(){
+        this.socket.emit('addPlayer', {game_id: this.game_id, player_id: this.player_id, player_name: this.playerName});  
+    }
+    
+    this.deviceOrientationHandler = function(tiltLR, tiltFB, dir){
+        document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+        document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+        document.getElementById("doDirection").innerHTML = Math.round(dir);
+        // Apply the transform to the image
+        var logo = document.getElementById("imgLogo");
+        logo.style.webkitTransform =                
+            "rotate3d(0,1,0, "+ (tiltLR)+"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+    }
+    
+    this.playerAction = function(x, y){
+        var data = {
+            player_id: this.player_id,
+            game_id: this.game_id,
+            x: x,
+            y, y
+        }
+        this.socket.emit('playerMove', data);
+        return false;
+    }
+    
 }
+
+
+$(document).ready(function(){
+    var game_id = $('#game_id').html();
+    var player_id = $('#player_id').html();
+    var player_name = 'Player ' + player_id;
+    
+    var player = new Player(game_id, player_id, player_name);
+    player.init();
+
+});
+
+
+
+
+
+
+
