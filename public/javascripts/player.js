@@ -28,7 +28,7 @@ if (window.DeviceOrientationEvent) {
     document.getElementById("doEvent").innerHTML = "DeviceOrientation";
     // Listen for the deviceorientation event and handle the raw data
     window.addEventListener('deviceorientation', function(eventData) {
-        if(Date.now() - lastSend > 50){
+        if(Date.now() - lastSend > 16){
             console.log('send');
             lastSend = Date.now();
                     // gamma is the left-to-right tilt in degrees, where right is positive
