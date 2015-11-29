@@ -12,8 +12,7 @@ Game = function(players_num){
     
     this.startGame = function(){
         console.log('start');
-        $('#game-field').empty();
-        // Matter.js - http://brm.io/matter-js/
+        $('#game-field').empty(); //todo - change selector
 
         // Matter module aliases
         var Engine = Matter.Engine,
@@ -21,12 +20,12 @@ Game = function(players_num){
             Body = Matter.Body,
             Bodies = Matter.Bodies,
             Composites = Matter.Composites,
-            MouseConstraint = Matter.MouseConstraint;
-        Vector = Matter.Vector;
+            MouseConstraint = Matter.MouseConstraint,
+            Vector = Matter.Vector;
 
 
         // create a Matter.js engine
-        var engine = Engine.create(document.getElementById('game-field'), {
+        var engine = Engine.create(document.getElementById('game-field'), {//todo change selector
             render: {
                 options: {
                     height : 1080,
@@ -38,6 +37,9 @@ Game = function(players_num){
         // add a mouse controlled constraint 
         var mouseConstraint = MouseConstraint.create(engine); //todo comment
         World.add(engine.world, mouseConstraint);
+        
+        
+        /////////////////////////////////////////////////
 
         var offset = 10,
             options = { 
@@ -121,7 +123,7 @@ GameControl = function(players_num, game){
         });
         
         this.socket.on('addPlayer', function(data){
-            self.playerReady(data.player_id);
+            self.playerReady(data.player_id, data.player_name);
             self.players++;
             
             if(self.players == self.players_num){
@@ -153,10 +155,10 @@ GameControl = function(players_num, game){
             });
     }
     
-    this.playerReady = function(player_id){
+    this.playerReady = function(player_id, player_name){
         console.log(player_id);
         var id = '#player-area-' + player_id;
-        $(id).empty().append('<p>READY</p>');
+        $(id).empty().append('<p>READY ' + player_name + '</p>');
     }
 }
 
