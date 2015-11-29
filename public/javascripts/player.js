@@ -57,11 +57,24 @@ var Player = function(game_id, player_id, playerName){
         var data = {
             player_id: this.player_id,
             game_id: this.game_id,
-            x: x,
-            y, y
+            x: this.nomalize(x),
+            y: this.nomalize(y)
         }
         this.socket.emit('playerMove', data);
         return false;
+    }
+    
+    this.nomalize = function(x){
+        if(x == 0){
+            return 0;
+        }
+        if(x > 45){
+            x = 45;
+        }
+        if(x<-45){
+            x=-45;
+        }
+        return x/45;
     }
     
 }
