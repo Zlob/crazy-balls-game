@@ -28,8 +28,7 @@ Game = function(players_num){
         console.log(playerId, action, data);
         var index = parseInt(playerId);
         var player = this.players[index];
-//         player.ApplyForce(new b2Vec2(data.x * 100, data.y * 100), player.GetLocalCenter());
-        player.ApplyImpulse(new b2Vec2(data.x * 1, data.y * 1), player.GetPosition());
+        player.ApplyImpulse(new b2Vec2(data.x, data.y), player.GetPosition());
     }
     
     this.startGame = function(){
@@ -117,6 +116,7 @@ Game = function(players_num){
 
 GameControl = function(players_num, game){
     this.players_num = players_num;
+    this.gameId = null,
     this.game = game;
     this.players = 0;  
 
@@ -126,7 +126,10 @@ GameControl = function(players_num, game){
         
         this.socket.emit('addGame', {players_num: self.players_num});
         
-        this.socket.on('playerLinks', function(data){
+        
+        
+        this.socket.on('gameData', function(data){
+            self.gameId = data.gameId;
             self.showLinks(data);
         });
         
@@ -135,6 +138,7 @@ GameControl = function(players_num, game){
             self.players++;
             
             if(self.players == self.players_num){
+                self.socket.emit('startGame', {gameId: self.gameId});
 //                 self.game = new Game();
                 self.registerPlayerMove();
                 self.game.startGame();
