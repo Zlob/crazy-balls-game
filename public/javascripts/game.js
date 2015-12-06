@@ -24,11 +24,20 @@ Game = function(playersNum){
     
     this.world =  new b2World( new b2Vec2(0, 0) ,true); // doSleep флаг.
     
-    this.playerAction = function(playerId, action, data){
-        console.log(playerId, action, data);
-        var index = parseInt(playerId);
-        var player = this.players[index];
-        player.ApplyImpulse(new b2Vec2(data.x, data.y), player.GetPosition());
+    this.playerAction = function(data){
+        for(var playerId in data)
+        {
+            //todo refactoring
+            var playerActions = data[playerId];
+            var player = this.players[playerId];
+            for(var action in playerActions){
+                if(action == 'playerMove'){
+                    var actionData = playerActions[action];
+                    player.ApplyImpulse(new b2Vec2(actionData.x, actionData.y), player.GetPosition());
+                }
+            }
+                
+        }
     }
     
     this.startGame = function(){
@@ -124,9 +133,7 @@ GameControl = function(playersNum, game){
         var self = this;
         this.socket = io();
         
-        this.socket.emit('addGame', {playersNum: self.playersNum});
-        
-        
+        this.socket.emit('addGame', {playersNum: self.playersNum});      
         
         this.socket.on('gameData', function(data){
             self.gameId = data.gameId;
@@ -149,8 +156,8 @@ GameControl = function(playersNum, game){
        
     this.registerPlayerMove = function(){
         var self = this;
-        this.socket.on('playerMove', function(data){
-            self.game.playerAction(data.playerId, 'playerMove', {x: data.x, y: data.y} );
+        this.socket.on('playerActions', function(data){
+            self.game.playerAction(data);
         });
     }
     
@@ -173,7 +180,6 @@ GameControl = function(playersNum, game){
     }
     
     this.playerReady = function(playerId, playerName){
-        console.log(playerId);
         var id = '#player-area-' + playerId;
         $(id).empty().append('<p>READY ' + playerName + '</p>');
     }

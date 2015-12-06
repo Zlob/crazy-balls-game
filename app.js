@@ -9,11 +9,13 @@ app.use(express.static('public'));
 ///////////////////////////////////////////////////////////////////
 
 var games = []; //remove from global scope, module?
-// var sendActions = function(){
-//     games.forEach(function(game){
-//         game.sendPlayerActions();
-//     })
-// }
+var sendActions = function(){
+    games.forEach(function(game){
+        if(game.isStarted()){
+            game.sendPlayerActions();
+        }
+    })
+}
 
 Game = function(id, gameSocket){
     var IS_CREATED = 0;
@@ -22,8 +24,8 @@ Game = function(id, gameSocket){
     this.id = id;
     this.gameSocket = gameSocket;
     this.status = IS_CREATED;
-    this.players = [];
-    this.actions = {};    
+    this.players = {};
+    this.actions = {};
     
     this.addPlayer = function(id, player){
         this.players[id] = player;
@@ -34,17 +36,26 @@ Game = function(id, gameSocket){
     }
     
     this.addPlayerAction = function(playerId, playerAction, data){
-        
-//         this.actions[playerId][playerAction] = data;
+        this.getPlayer(playerId).addAction(playerAction, data);
     }
     
     this.sendPlayerActions = function(){
+        for(var playerId in this.players){
+            if (this.players.hasOwnProperty(playerId)) {
+                var player = this.getPlayer(playerId);
+                this.actions[playerId] = player.actions;
+//                 player.clearActions();
+            }
+        }
         this.gameSocket.emit('playerActions', this.actions);
     }
     
     this.startGame = function(){
         this.status = IS_STARTED;
-        console.log('started');
+    }
+    
+    this.isStarted = function(){
+        return this.status == IS_STARTED;
     }
 }
 
@@ -55,6 +66,12 @@ Player = function(id, socket){
     
     this.addAction = function(action, data){
         this.actions[action] = data;
+    }
+    
+    this.clearActions = function(){
+        for(var actionName in this.actions){
+            delete this.actions[actionName];
+        }
     }
 }
 
@@ -99,14 +116,14 @@ io.on('connection', function(socket){
     socket.on('addPlayer', function(data){
         console.log('addPlayer', data );
         var game = games[data.gameId];
-        game.players[data.playerId] = socket;
+        var player = new Player(data.playerId, socket);
+        game.addPlayer(data.playerId, player);
         game.gameSocket.emit('addPlayer', data);
     })
     
-    socket.on('playerMove', function(data){
-        var game = games[data.gameId];
-        game.addPlayerAction(data.playerId, 'playerMove', data)
-//         game.gameSocket.emit('playerMove', data);
+    socket.on('playerAction', function(action){
+        var game = games[action.gameId];
+        game.addPlayerAction(action.playerId, action.type, action.data)
     })  
     
     socket.on('startGame', function(data){      
@@ -121,6 +138,7 @@ io.on('connection', function(socket){
 });
 
 // setInterval(sendActions, 1000 / 60);
+setInterval(sendActions, 1000 / 60);
 
 ////////////////////////////////////////////////////////////////////////////
 

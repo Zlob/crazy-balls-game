@@ -30,7 +30,7 @@ var Player = function(gameId, playerId, playerName){
 
                     // call our orientation event handler
                     self.deviceOrientationHandler(tiltLR, tiltFB, dir);
-                    self.playerAction(tiltFB, -1*tiltLR);
+                    self.playerMove(tiltFB, -1*tiltLR);
                 }
 
             }, false);
@@ -53,15 +53,22 @@ var Player = function(gameId, playerId, playerName){
             "rotate3d(0,1,0, "+ (tiltLR)+"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
     }
     
-    this.playerAction = function(x, y){
-        var data = {
+    this.playerMove = function(x, y){
+        var action = {
+            type: 'playerMove',
             playerId: this.playerId,
             gameId: this.gameId,
-            x: this.nomalize(x),
-            y: this.nomalize(y)
+            data: {
+                x: this.nomalize(x),
+                y: this.nomalize(y)
+            }            
         }
-        this.socket.emit('playerMove', data);
+        this.playerAction(action);
         return false;
+    }
+    
+    this.playerAction = function(data){
+        this.socket.emit('playerAction', data);
     }
     
     this.nomalize = function(x){
