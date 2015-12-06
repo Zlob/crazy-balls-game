@@ -1,8 +1,8 @@
-var Player = function(game_id, player_id, playerName){
+var Player = function(gameId, playerId, playerName){
     
     this.socket = io();
-    this.game_id = game_id;
-    this.player_id = player_id;   
+    this.gameId = gameId;
+    this.playerId = playerId;   
     this.playerName = playerName;
     
     this.lastSend = Date.now();
@@ -40,7 +40,7 @@ var Player = function(game_id, player_id, playerName){
     }
     
     this.sendAddPlayer = function(){
-        this.socket.emit('addPlayer', {game_id: this.game_id, player_id: this.player_id, player_name: this.playerName});  
+        this.socket.emit('addPlayer', {gameId: this.gameId, playerId: this.playerId, playerName: this.playerName});  
     }
     
     this.deviceOrientationHandler = function(tiltLR, tiltFB, dir){
@@ -55,8 +55,8 @@ var Player = function(game_id, player_id, playerName){
     
     this.playerAction = function(x, y){
         var data = {
-            player_id: this.player_id,
-            game_id: this.game_id,
+            playerId: this.playerId,
+            gameId: this.gameId,
             x: this.nomalize(x),
             y: this.nomalize(y)
         }
@@ -81,11 +81,11 @@ var Player = function(game_id, player_id, playerName){
 
 
 $(document).ready(function(){
-    var game_id = $('#game_id').html();
-    var player_id = $('#player_id').html();
-    var player_name = 'Player ' + player_id;
+    var gameId = $('#game_id').html();
+    var playerId = $('#player_id').html();
+    var playerName = 'Player ' + playerId;
     
-    var player = new Player(game_id, player_id, player_name);
+    var player = new Player(gameId, playerId, playerName);
     player.init();
 
 });

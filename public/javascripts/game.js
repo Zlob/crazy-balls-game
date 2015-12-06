@@ -1,7 +1,7 @@
-Game = function(players_num){
+Game = function(playersNum){
     var self = this;
     
-    this.players_num = players_num;
+    this.playersNum = playersNum;
     this.players = [];
     this.playersSrartPosition = {
         1: {x: 5, y: 5},
@@ -86,7 +86,7 @@ Game = function(players_num){
     }
     
     this.buildLevel = function() {
-        for(var i = 1; i <= this.players_num; i++){
+        for(var i = 1; i <= this.playersNum; i++){
             var position = this.playersSrartPosition[i];
             this.players[i] = this.createPlayer(position.x, position.y, 1);    
         }        
@@ -114,8 +114,8 @@ Game = function(players_num){
 }
 
 
-GameControl = function(players_num, game){
-    this.players_num = players_num;
+GameControl = function(playersNum, game){
+    this.playersNum = playersNum;
     this.gameId = null,
     this.game = game;
     this.players = 0;  
@@ -124,7 +124,7 @@ GameControl = function(players_num, game){
         var self = this;
         this.socket = io();
         
-        this.socket.emit('addGame', {players_num: self.players_num});
+        this.socket.emit('addGame', {playersNum: self.playersNum});
         
         
         
@@ -134,10 +134,10 @@ GameControl = function(players_num, game){
         });
         
         this.socket.on('addPlayer', function(data){
-            self.playerReady(data.player_id, data.player_name);
+            self.playerReady(data.playerId, data.playerName);
             self.players++;
             
-            if(self.players == self.players_num){
+            if(self.players == self.playersNum){
                 self.socket.emit('startGame', {gameId: self.gameId});
 //                 self.game = new Game();
                 self.registerPlayerMove();
@@ -150,7 +150,7 @@ GameControl = function(players_num, game){
     this.registerPlayerMove = function(){
         var self = this;
         this.socket.on('playerMove', function(data){
-            self.game.playerAction(data.player_id, 'playerMove', {x: data.x, y: data.y} );
+            self.game.playerAction(data.playerId, 'playerMove', {x: data.x, y: data.y} );
         });
     }
     
@@ -172,18 +172,18 @@ GameControl = function(players_num, game){
             });
     }
     
-    this.playerReady = function(player_id, player_name){
-        console.log(player_id);
-        var id = '#player-area-' + player_id;
-        $(id).empty().append('<p>READY ' + player_name + '</p>');
+    this.playerReady = function(playerId, playerName){
+        console.log(playerId);
+        var id = '#player-area-' + playerId;
+        $(id).empty().append('<p>READY ' + playerName + '</p>');
     }
 }
 
 $( document ).ready(function(){
-    var players_num = $('#players_num').attr('data-store');
-    var game = new Game(players_num);
+    var playersNum = $('#players_num').attr('data-store');
+    var game = new Game(playersNum);
 //     var game = {};
-    var gameControl = new GameControl(players_num, game);
+    var gameControl = new GameControl(playersNum, game);
     gameControl.init();
 }
 );
