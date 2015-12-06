@@ -16,7 +16,7 @@ var Player = function(game_id, player_id, playerName){
             document.getElementById("doEvent").innerHTML = "DeviceOrientation";
             // Listen for the deviceorientation event and handle the raw data
             window.addEventListener('deviceorientation', function(eventData) {
-                if(Date.now() - self.lastSend > 16){
+                if(Date.now() - self.lastSend > 100){
                     console.log('send');
                     self.lastSend = Date.now();
                     // gamma is the left-to-right tilt in degrees, where right is positive
@@ -30,7 +30,7 @@ var Player = function(game_id, player_id, playerName){
 
                     // call our orientation event handler
                     self.deviceOrientationHandler(tiltLR, tiltFB, dir);
-                    self.playerAction(tiltLR, tiltFB);
+                    self.playerAction(tiltFB, -1*tiltLR);
                 }
 
             }, false);

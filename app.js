@@ -16,6 +16,7 @@ Game = function(id, gameSocket){
     this.players = {};
     this.addPlayer = function(player){
         console.log('add player')
+        
     }
 }
 

@@ -1,110 +1,118 @@
 Game = function(players_num){
+    var self = this;
+    
     this.players_num = players_num;
+    this.players = [];
+    this.playersSrartPosition = {
+        1: {x: 5, y: 5},
+        2: {x: 8, y: 8},
+        3: {x: 11, y: 11},
+        4: {x: 14, y: 14}
+    }
+    
+    b2AABB  = Box2D.Collision.b2AABB;
+    b2World = Box2D.Dynamics.b2World;
+    b2Vec2 = Box2D.Common.Math.b2Vec2;
+    b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+    b2Body = Box2D.Dynamics.b2Body;
+    b2BodyDef = Box2D.Dynamics.b2BodyDef;
+    b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+    b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+    b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+    b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef;
+    b2ContactListener = Box2D.Dynamics.b2ContactListener;
+    
+    this.world =  new b2World( new b2Vec2(0, 0) ,true); // doSleep флаг.
     
     this.playerAction = function(playerId, action, data){
         console.log(playerId, action, data);
-//                     var id = data.player_id;
-//             var index = parseInt(id) - 1 ;
-//             var player = players[index];
-//             Body.applyForce(player, player.position, {x:(data.x/500),y:(data.y/500)})
-//             console.log('playerMove', data)
+        var index = parseInt(playerId);
+        var player = this.players[index];
+//         player.ApplyForce(new b2Vec2(data.x * 100, data.y * 100), player.GetLocalCenter());
+        player.ApplyImpulse(new b2Vec2(data.x * 1, data.y * 1), player.GetPosition());
     }
     
     this.startGame = function(){
+            
+        $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#333333;"></canvas>');       
+        var canvas = $('#canvas').get(0);
+        var context = canvas.getContext('2d');
+
+        this.buildWorld();
+        this.buildLevel();
+        this.initDraw();
+        window.setInterval(this.update, 1000 / 60);
         console.log('start');
-        $('#game-field').empty(); //todo - change selector
-
-        // Matter module aliases
-        var Engine = Matter.Engine,
-            World = Matter.World,
-            Body = Matter.Body,
-            Bodies = Matter.Bodies,
-            Composites = Matter.Composites,
-            MouseConstraint = Matter.MouseConstraint,
-            Vector = Matter.Vector;
-
-
-        // create a Matter.js engine
-        var engine = Engine.create(document.getElementById('game-field'), {//todo change selector
-            render: {
-                options: {
-                    height : 1080,
-                    width : 1920
-                }
-            }
-        });
-
-        // add a mouse controlled constraint 
-        var mouseConstraint = MouseConstraint.create(engine); //todo comment
-        World.add(engine.world, mouseConstraint);
-        
-        
-        /////////////////////////////////////////////////
-
-        var offset = 10,
-            options = { 
-                isStatic: true,
-                render: {
-                    visible: true
-                }
-            };
-
-        engine.world.bodies = [];
-
-        engine.world.gravity.y = 0;
-
-
-        // these static walls will not be rendered in this sprites example, see options
-        World.add(engine.world, [
-            Bodies.rectangle(960, -offset, 1920.5 + 2 * offset, 50.5, options),
-            Bodies.rectangle(960, 1080 + offset, 1920.5 + 2 * offset, 50.5, options),
-            Bodies.rectangle(1920 + offset, 540, 50.5, 1080.5 + 2 * offset, options),
-            Bodies.rectangle(-offset, 540, 50.5, 1080.5 + 2 * offset, options)
-        ]);
-
-        var playerOptions =  {
-            density: 0.0005,
-            frictionAir: 0.06,
-            restitution: 0.5,
-            friction: 0.01,
-            render: {
-                sprite: {
-                    texture: 'http://brm.io/matter-js-demo-master/img/ball.png'
-                }
-            }
-        };
-
-        var players = [];
-
-        players.push(Bodies.circle(100, 100, 46, playerOptions));
-        players.push(Bodies.circle(100, 300, 46, playerOptions));
-        players.push(Bodies.circle(300, 100, 46, playerOptions));
-        players.push(Bodies.circle(300, 300, 46, playerOptions));          
-
-
-
-
-
-
-        World.add(engine.world, players);
-
-        var renderOptions = engine.render.options;
-        renderOptions.background = 'http://brm.io/matter-js-demo-master/img/wall-bg.jpg';
-        renderOptions.showAngleIndicator = false;
-        renderOptions.wireframes = false;            
-        renderOptions.height = 1080;
-        renderOptions.width = 1920;
-
-        engine.world.bounds.min.x = -Infinity;
-        engine.world.bounds.min.y = -Infinity;
-        engine.world.bounds.max.x = Infinity;
-        engine.world.bounds.max.y = Infinity;
-
-        // run the engine
-        Engine.run(engine);
     }
-}
+        
+    this.update = function() {
+        self.world.Step(1/60, 10, 10);
+        self.world.DrawDebugData();
+        self.world.ClearForces();            
+    }
+    
+    this.initDraw = function() {
+        debugDraw = new b2DebugDraw();
 
+        debugDraw.SetSprite(document.getElementById('canvas').getContext('2d'));
+        debugDraw.SetDrawScale(30.0);
+        debugDraw.SetFillAlpha(0.5);
+        debugDraw.SetLineThickness(1.0);
+        debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+        this.world.SetDebugDraw(debugDraw);   
+    }
+
+    this.buildWorld = function() {
+        this.buildWall(32, 1, 32, 1);//top
+        this.buildWall(32, 1, 32, 35);//bottom
+        this.buildWall(1, 35, 1, 35);//left
+        this.buildWall(1, 35, 64, 35);//right
+    }
+    
+    this.buildWall = function(height, width, x, y){
+        fixDef = new b2FixtureDef();
+
+        fixDef.density = 1.0;
+        fixDef.friction = 0.5;
+        fixDef.restitution = 0.2;    
+
+        bodyDef = new b2BodyDef();            
+        bodyDef.type = b2Body.b2_staticBody;
+
+        fixDef = new b2FixtureDef();
+        fixDef.shape = new b2PolygonShape();
+        fixDef.shape.SetAsBox(height, width);
+        bodyDef.position.Set(x, y);
+        this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+    }
+    
+    this.buildLevel = function() {
+        for(var i = 1; i <= this.players_num; i++){
+            var position = this.playersSrartPosition[i];
+            this.players[i] = this.createPlayer(position.x, position.y, 1);    
+        }        
+    }
+    
+    this.createPlayer = function(x,y, r) {
+        bodyDef = new b2BodyDef();   
+        fixDef = new b2FixtureDef();
+        
+        fixDef.density = 1.0;
+        fixDef.friction = 1.0;
+        fixDef.restitution = 1.0;    
+        
+        bodyDef.type = b2Body.b2_dynamicBody;       
+        fixDef.shape = new b2CircleShape;
+        fixDef.shape.SetRadius(1);
+
+        bodyDef.position.x = x;
+        bodyDef.position.y = y;
+        var player = this.world.CreateBody(bodyDef);
+        player.CreateFixture(fixDef);    
+        return player;
+    }
+    
+}
 
 
 GameControl = function(players_num, game){
@@ -127,16 +135,21 @@ GameControl = function(players_num, game){
             self.players++;
             
             if(self.players == self.players_num){
+//                 self.game = new Game();
+                self.registerPlayerMove();
                 self.game.startGame();
             }
             console.log(data);
-        });
-        
+        });       
+    }
+       
+    this.registerPlayerMove = function(){
+        var self = this;
         this.socket.on('playerMove', function(data){
             self.game.playerAction(data.player_id, 'playerMove', {x: data.x, y: data.y} );
         });
     }
-       
+    
     this.showLinks = function(data){
         data.links.forEach(function(link, index){
             var id = 'player-area-' + ++index;
@@ -162,10 +175,10 @@ GameControl = function(players_num, game){
     }
 }
 
-$(document).ready(function(){
-    var t = $('#players_num');
+$( document ).ready(function(){
     var players_num = $('#players_num').attr('data-store');
     var game = new Game(players_num);
+//     var game = {};
     var gameControl = new GameControl(players_num, game);
     gameControl.init();
 }
