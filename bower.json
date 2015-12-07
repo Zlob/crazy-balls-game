@@ -24,6 +24,7 @@
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
     "qrcode-js": "*",
-    "matter-js": "~0.8.0-alpha"
+    "matter-js": "~0.8.0-alpha",
+    "requirejs": "~2.1.22"
   }
 }

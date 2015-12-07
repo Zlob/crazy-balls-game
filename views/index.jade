@@ -3,12 +3,10 @@ html
     title CrazyBalls
     link(href='/libs/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
     link(href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css')    
-    script(src="libs/jquery/dist/jquery.min.js") 
-    script(src="javascripts/index.js") 
-    
-    link( rel="stylesheet/less" type="text/css" href="stylesheets/less/index.less")    
-    script(src="libs/less/dist/less.min.js" type="text/javascript") 
-    
+    link(rel="stylesheet/less" type="text/css" href="stylesheets/less/index.less")        
+
+    script(src="libs/less/dist/less.min.js" type="text/javascript")   
+    script(data-main='javascripts/index/app.js' src="libs/requirejs/require.js")
     
   body
       nav(class='navbar')

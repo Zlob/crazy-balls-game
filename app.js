@@ -17,66 +17,64 @@ var sendActions = function(){
     })
 }
 
-Game = function(id, gameSocket){
-    var IS_CREATED = 0;
-    var IS_STARTED = 1;
-    
+var IS_CREATED = 0;
+var IS_STARTED = 1;
+
+Game = function(id, gameSocket){    
     this.id = id;
     this.gameSocket = gameSocket;
     this.status = IS_CREATED;
-    this.players = {};
+    this.players = [];
     this.actions = {};
-    
-    this.addPlayer = function(id, player){
-        this.players[id] = player;
-    }
-    
-    this.getPlayer = function(id){
-        return this.players[id];
-    }
-    
-    this.addPlayerAction = function(playerId, playerAction, data){
-        this.getPlayer(playerId).addAction(playerAction, data);
-    }
-    
-    this.sendPlayerActions = function(){
-        for(var playerId in this.players){
-            if (this.players.hasOwnProperty(playerId)) {
-                var player = this.getPlayer(playerId);
-                this.actions[playerId] = player.actions;
-//                 player.clearActions();
-            }
-        }
-        this.gameSocket.emit('playerActions', this.actions);
-    }
-    
-    this.startGame = function(){
-        this.status = IS_STARTED;
-    }
-    
-    this.isStarted = function(){
-        return this.status == IS_STARTED;
-    }
+}
+
+Game.prototype.addPlayer = function(id, player){
+    this.players[id] = player;
+}
+
+Game.prototype.getPlayer = function(id){
+    return this.players[id];
+}
+
+Game.prototype.addPlayerAction = function(playerId, playerAction, data){
+    this.getPlayer(playerId).addAction(playerAction, data);
+}
+
+Game.prototype.sendPlayerActions = function(){
+    this.actions = this.players.map(function(player){
+        return player.actions;
+    });
+    this.players.forEach(function(player){player.clearActions()});
+    this.gameSocket.emit('playerActions', this.actions);
+}
+
+Game.prototype.startGame = function(){
+    this.status = IS_STARTED;
+}
+
+Game.prototype.isStarted = function(){
+    return this.status == IS_STARTED;
 }
 
 Player = function(id, socket){
     this.id = id;
     this.socket = socket;
-    this.actions = {};
-    
-    this.addAction = function(action, data){
-        this.actions[action] = data;
-    }
-    
-    this.clearActions = function(){
-        for(var actionName in this.actions){
-            delete this.actions[actionName];
-        }
+    this.actions = {};   
+}
+
+Player.prototype.addAction = function(action, data){
+    this.actions[action] = data;
+}
+
+Player.prototype.clearActions = function(){
+    for(var actionName in this.actions){
+        delete this.actions[actionName];
     }
 }
 
 
-///////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
 
 app.get('/', function(req, res){
     res.render('index.jade');
@@ -107,7 +105,7 @@ io.on('connection', function(socket){
             links : []
         }
         
-        for(var i = 1; i <= playersNum; i++){
+        for(var i = 0; i < playersNum; i++){
             data.links.push('https://neutral-sierra-9500.codio.io/game/'+gameId+'/player/'+ i);
         }
         socket.emit('gameData', data);

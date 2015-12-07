@@ -2,9 +2,7 @@ html
   head
     title player
     link(href='/stylesheets/player.css', rel='stylesheet')
-    script( src="/socket.io/socket.io.js" type='text/javascript')
-    script( src="/libs/jquery/dist/jquery.min.js") 
-    script( src="/javascripts/player.js" type='text/javascript')    
+    script(data-main='/javascripts/player/app.js' src="/libs/requirejs/require.js")
     div(id='game_id') #{gameId}
     div(id='player_id') #{playerId}
   body     
