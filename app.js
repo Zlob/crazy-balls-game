@@ -25,7 +25,6 @@ Game = function(id, gameSocket){
     this.gameSocket = gameSocket;
     this.status = IS_CREATED;
     this.players = [];
-    this.actions = {};
 }
 
 Game.prototype.addPlayer = function(id, player){
@@ -41,11 +40,11 @@ Game.prototype.addPlayerAction = function(playerId, playerAction, data){
 }
 
 Game.prototype.sendPlayerActions = function(){
-    this.actions = this.players.map(function(player){
+    var actions = this.players.map(function(player){
         return player.actions;
     });
-    this.players.forEach(function(player){player.clearActions()});
-    this.gameSocket.emit('playerActions', this.actions);
+    this.gameSocket.emit('playerActions', actions);
+//     this.players.forEach(function(player){player.clearActions()});
 }
 
 Game.prototype.startGame = function(){
