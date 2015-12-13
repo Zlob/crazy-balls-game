@@ -32,13 +32,18 @@ define(['box2d'],function(){
         this.body.CreateFixture(fixDef);    
         this.score = 0;
         this.scoreArea = scoreArea;
+        this.lastFire = 0;
         
         this.move = function(x, y){
             this.body.ApplyImpulse(new b2Vec2(x, y), this.body.GetPosition());
         }
         
         this.fire = function(){
-            console.log('Fire');
+            if(this.lastFire  + 10000 < Date.now()){
+                var velocityVector = this.body.GetLinearVelocity();    
+                this.move(velocityVector.x * 10, velocityVector.y * 10);
+                this.lastFire  = Date.now();
+            }           
         }
         
         this.addScore = function(score){
@@ -151,6 +156,11 @@ define(['box2d'],function(){
                     if(action == 'playerMove'){
                         var actionData = playerActions[action];
                         player.move(actionData.x, actionData.y);
+                    }
+                    if(action == 'playerFire'){
+//                         var actionData = playerActions[action];
+//                         player.fire(actionData.x, actionData.y);
+                        player.fire();
                     }
                 }
 

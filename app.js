@@ -44,7 +44,7 @@ Game.prototype.sendPlayerActions = function(){
         return player.actions;
     });
     this.gameSocket.emit('playerActions', actions);
-//     this.players.forEach(function(player){player.clearActions()});
+    this.players.forEach(function(player){player.clearActions()});
 }
 
 Game.prototype.startGame = function(){
@@ -134,7 +134,6 @@ io.on('connection', function(socket){
     
 });
 
-// setInterval(sendActions, 1000 / 60);
 setInterval(sendActions, 1000 / 60);
 
 ////////////////////////////////////////////////////////////////////////////
