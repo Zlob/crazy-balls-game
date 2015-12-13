@@ -6,6 +6,10 @@ define(['io'], function(io) {
         this.gameId = gameId;
         this.playerId = playerId;   
         this.playerName = playerName;
+        this.vector = {
+            x : 0,
+            y : 0
+        };
 
         this.lastSend = Date.now();
 
@@ -19,7 +23,6 @@ define(['io'], function(io) {
                 // Listen for the deviceorientation event and handle the raw data
                 window.addEventListener('deviceorientation', function(eventData) {
                     if(Date.now() - self.lastSend > 1000/60){
-                        console.log('send');
                         self.lastSend = Date.now();
                         // gamma is the left-to-right tilt in degrees, where right is positive
                         var tiltLR = eventData.gamma;
@@ -39,6 +42,10 @@ define(['io'], function(io) {
             } else {
                 document.getElementById("doEvent").innerHTML = "Not supported."
             }
+            
+            window.addEventListener('click', function(){
+                self.playerFire();
+            });
         }
 
         this.sendAddPlayer = function(){
@@ -56,15 +63,28 @@ define(['io'], function(io) {
         }
 
         this.playerMove = function(x, y){
+            this.vector.x = this.nomalize(x);
+            this.vector.y = this.nomalize(y);
+            
             var action = {
                 type: 'playerMove',
                 playerId: this.playerId,
                 gameId: this.gameId,
-                data: {
-                    x: this.nomalize(x),
-                    y: this.nomalize(y)
-                }            
+                data: this.vector          
             }
+            
+            this.playerAction(action);
+            return false;
+        }
+        
+        this.playerFire = function(data){
+            var action = {
+                type: 'playerFire',
+                playerId: this.playerId,
+                gameId: this.gameId,
+                data: this.vector          
+            }
+            
             this.playerAction(action);
             return false;
         }
