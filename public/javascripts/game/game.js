@@ -18,10 +18,11 @@ define(['box2d'],function(){
         bodyDef.type = b2Body.b2_dynamicBody;    
         bodyDef.position.x = x;
         bodyDef.position.y = y;
+        bodyDef.linearDamping = 0.5;
         
         fixDef = new b2FixtureDef();
-        fixDef.density = 1.0;
-        fixDef.friction = 3.0;
+        fixDef.density = 1;
+        fixDef.friction = 0.5;
         fixDef.restitution = 0.5;       
         fixDef.shape = new b2CircleShape;
         fixDef.shape.SetRadius(1);
