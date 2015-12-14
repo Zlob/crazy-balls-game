@@ -1,4 +1,4 @@
-define(['box2d'],function(){
+define(['box2d', 'walls'], function(box, Walls){
     
     b2AABB  = Box2D.Collision.b2AABB;
     b2World = Box2D.Dynamics.b2World;
@@ -135,7 +135,14 @@ define(['box2d'],function(){
 
         this.playersNum = playersNum;
         this.players = [];
+        this.canvas = null;
         this.ctx = null;
+        this.parametrs = {
+            backgroundColor : '#202020',
+            width : 1920,
+            height : 1080,
+            metr : 30
+        }
         
         this.playersSrartPosition = [
             {x: 5, y: 5, scoreArea: {x: 65, y: 40}},
@@ -167,9 +174,11 @@ define(['box2d'],function(){
             }
         }
 
-        this.startGame = function(context){
-            this.ctx = context;
-            this.buildWorld();
+        this.startGame = function(canvas){
+            this,canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            
+            this.walls = new Walls(this);
             this.buildLevel();
             this.initDraw();
             window.setInterval(this.update, 1000 / 60);
@@ -197,30 +206,6 @@ define(['box2d'],function(){
             debugDraw.SetLineThickness(1.0);
             debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
             this.world.SetDebugDraw(debugDraw);   
-        }
-
-        this.buildWorld = function() {
-            this.buildWall(32, 1, 32, 1);//top
-            this.buildWall(32, 1, 32, 35);//bottom
-            this.buildWall(1, 35, 1, 35);//left
-            this.buildWall(1, 35, 63, 35);//right
-        }
-
-        this.buildWall = function(height, width, x, y){
-            fixDef = new b2FixtureDef();
-
-            fixDef.density = 1.0;
-            fixDef.friction = 0.5;
-            fixDef.restitution = 0.2;    
-
-            bodyDef = new b2BodyDef();            
-            bodyDef.type = b2Body.b2_staticBody;
-
-            fixDef = new b2FixtureDef();
-            fixDef.shape = new b2PolygonShape();
-            fixDef.shape.SetAsBox(height, width);
-            bodyDef.position.Set(x, y);
-            this.world.CreateBody(bodyDef).CreateFixture(fixDef);
         }
 
         this.buildLevel = function() {
@@ -255,9 +240,15 @@ define(['box2d'],function(){
             });
         }
         
-        this.render = function(){                        
+        this.render = function(){      
+//             this.ctx.clearRect(0, 0, this.parametrs.width, this.parametrs.height);
+            
+//             this.showBackGround();
+            
+            this.walls.render();
             this.showPlayersScore();
             this.dominationPoint.render(this.ctx);
+//             this.ctx.restore();
         }
         
         this.checkGameOver = function(){
@@ -267,6 +258,11 @@ define(['box2d'],function(){
             if(gameIsOver){
                 console.log("GAME_OVER");
             }
+        }
+        
+        this.showBackGround = function(){
+            this.ctx.fillStyle = this.parametrs.backgroundColor;
+            this.ctx.fillRect(0, 0, this.parametrs.width, this.parametrs.height);
         }
     }
     return Game;

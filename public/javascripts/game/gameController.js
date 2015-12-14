@@ -57,11 +57,11 @@ define(['io', 'QRCode'], function (io) {
         }
         
         this.startGame = function(){
-            $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#333333;"></canvas>');       
-            var context = $('#canvas').get(0).getContext('2d');
+            $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#202020;"></canvas>');       
+            var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
             this.registerPlayerAction();
-            this.game.startGame(context);
+            this.game.startGame(canvas);
         }
     }
 
