@@ -1,28 +1,38 @@
 define(['box2d'], function() {
         
-    var wall = function(game, position){
-        this.position = position;
+    var wall = function(world, ctx, options){
+        this.world = world;
+        this.ctx = ctx;
+        this.options = options;   
         
-        this.toMetr = function(pixels){
-            return pixels / this.position.metr;
+        this.body = null;
+
+        this.init = function(){
+            var fixDef = new Box2D.Dynamics.b2FixtureDef();
+
+            fixDef.density = 1.0;
+            fixDef.friction = 0.5;
+            fixDef.restitution = 0.2; 
+            fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
+            fixDef.shape.SetAsBox(this.toMetr(this.options.width) / 2, this.toMetr(this.options.height)/2);
+
+            var bodyDef = new Box2D.Dynamics.b2BodyDef();            
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+            bodyDef.position.Set(this.toMetr(this.options.x + this.options.width/2), this.toMetr(this.options.y + this.options.height/2));
+            this.body = this.world.CreateBody(bodyDef);
+            this.body.CreateFixture(fixDef);
+            return this;
         }
         
-        this.fixDef = new Box2D.Dynamics.b2FixtureDef();
-
-        this.fixDef.density = 1.0;
-        this.fixDef.friction = 0.5;
-        this.fixDef.restitution = 0.2; 
-        this.fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-        this.fixDef.shape.SetAsBox(this.toMetr(this.position.width) / 2, this.toMetr(this.position.height)/2);
-
-        this.bodyDef = new Box2D.Dynamics.b2BodyDef();            
-        this.bodyDef.type = Box2D.Dynamics.b2BodyDef.b2_staticBody;
-        this.bodyDef.position.Set(this.toMetr(this.position.x + this.position.width/2), this.toMetr(this.position.y + this.position.height/2));
-        game.world.CreateBody(this.bodyDef).CreateFixture(this.fixDef);
-        
         this.render = function(){
-            game.ctx.fillStyle = 'red';
-            game.ctx.fillRect(this.position.x, this.position.y, this.position.width, this.position.height);
+            this.ctx.save();
+            this.ctx.fillStyle = this.options.color;
+            this.ctx.fillRect(this.options.x, this.options.y, this.options.width, this.options.height);
+            this.ctx.restore();
+        }
+        
+        this.toMetr = function(pixels){
+            return pixels / this.options.pixelsInMetr;
         }
         
 

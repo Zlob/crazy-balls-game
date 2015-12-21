@@ -1,62 +1,66 @@
 define(['wall'],function(Wall) {
-    var walls = function(game, width, height, metr){
-        this.game = game;
+    var walls = function(world, ctx, gameOptions, options){
+        this.world = world;
+        this.ctx = ctx;
+        this.collection = {};
         
-        this.options = {
-            width  : width  || 1920,
-            height : height || 1080,
-            metr   : metr   || 30
-        }  
+        this.gameOptions = gameOptions;
         
+        this.options = options;
+                
         this.getWallPosition = function(type){
             if(type == 'left'){
                 return {
-                    x      : 0,
-                    y      : 0,
-                    height : this.options.height,
-                    width  : this.options.metr,
-                    metr   : this.options.metr
+                    x            : 0,
+                    y            : 0,
+                    height       : this.gameOptions.height,
+                    width        : this.options.size,
+                    color        : this.options.color,
+                    pixelsInMetr : this.gameOptions.pixelsInMetr
                 }
             }
             if(type == 'top'){
                 return {
-                    x      : 0,
-                    y      : 0,
-                    height : this.options.metr,
-                    width  : this.options.width,
-                    metr   : this.options.metr
+                    x            : 0,
+                    y            : 0,
+                    height       : this.options.size,
+                    width        : this.gameOptions.width,
+                    color        : this.options.color,
+                    pixelsInMetr : this.gameOptions.pixelsInMetr
                 }
             }
             if(type == 'right'){
                 return {
-                    x      : this.options.width - this.options.metr,
-                    y      : 0,
-                    height : this.options.height,
-                    width  : this.options.metr,
-                    metr   : this.options.metr
+                    x            : this.gameOptions.width - this.options.size,
+                    y            : 0,
+                    height       : this.gameOptions.height,
+                    width        : this.options.size,
+                    color        : this.options.color,
+                    pixelsInMetr : this.gameOptions.pixelsInMetr
                 }   
             }
 
             if(type == 'bottom'){
                 return {
-                    x      : 0,
-                    y      : this.options.height - this.options.metr,
-                    height : this.options.metr,
-                    width  : this.options.width,
-                    metr   : this.options.metr
+                    x            : 0,
+                    y            : this.gameOptions.height - this.options.size,
+                    height       : this.options.size,
+                    width        : this.gameOptions.width,
+                    color        : this.options.color,
+                    pixelsInMetr : this.gameOptions.pixelsInMetr
                 }
-            }
-            
+            }            
         }
         
-        this.collection = {
-            'left'   : new Wall(game, this.getWallPosition('left')),
-            'top'    : new Wall(game, this.getWallPosition('top')),
-            'right'  : new Wall(game, this.getWallPosition('right')),
-            'bottom' : new Wall(game, this.getWallPosition('bottom'))
-        }        
-        
-
+        this.init = function(){
+            this.collection = {
+                'left'   : new Wall(this.world, this.ctx, this.getWallPosition('left')).init(),
+                'top'    : new Wall(this.world, this.ctx, this.getWallPosition('top')).init(),
+                'right'  : new Wall(this.world, this.ctx, this.getWallPosition('right')).init(),
+                'bottom' : new Wall(this.world, this.ctx, this.getWallPosition('bottom')).init()
+            }   
+            return this;
+        }       
         
         this.render = function(){
             for(var wallName in this.collection){
