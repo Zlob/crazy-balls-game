@@ -1,4 +1,4 @@
-define(['box2d', 'walls', 'players', 'dominationArea', 'countDown'], function(box, Walls, Players, DominationArea, CountDown){
+define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScore'], function(box, Walls, Players, DominationArea, CountDown, PlayersScore){
 
     
     var BEGINING = 0;
@@ -48,12 +48,18 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown'], function(bo
             font : "50px Arial",
         }
         
+        this.playersScoreOptions = {
+            fontColor : 'green',
+            font : "50px Arial"
+        }
+        
         
         this.world =  null;        
         this.players = null;
         this.walls = null;
         this.dominationArea = null;
         this.countDown = null;
+        this.playersScore = null;
         this.canvas = null;
         this.ctx = null;       
 
@@ -69,6 +75,7 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown'], function(bo
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
             
             this.countDown = new CountDown(this.ctx, this.gameOptions, this.counterOptions, this.startGame).init();
+            this.playersScore = new PlayersScore(this.ctx, this.gameOptions, this.playersScoreOptions);
             
             window.setInterval(this.update, 1000 / 60);
         };
@@ -130,7 +137,7 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown'], function(bo
                 this.countDown.render();    
             }     
             if(this.status == GAME_OVER){
-                this.gameOver()
+                this.playersScore.render();
             }
         }
         
@@ -143,12 +150,13 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown'], function(bo
         }
         
         this.checkGameOver = function(){
-//             var gameIsOver = this.players.some(function(player){
-//                 return player.getScore() >= 1000;
-//             });
-//             if(gameIsOver){
-//                 this.status = GAME_OVER;
-//             }
+            var gameIsOver = this.players.all().some(function(player){
+                return player.getScore() >= 0;
+            });
+            if(gameIsOver){
+                this.playersScore.setScore(this.players.getScores());
+                this.status = GAME_OVER;
+            }
         }
         
         this.showBackGround = function(){

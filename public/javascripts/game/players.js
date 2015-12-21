@@ -98,6 +98,23 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
             return this.collection;
         }
         
+        this.getScores = function(){
+            return this.collection
+                .map(function(player, id){
+                return {id : id,
+                        score : player.getScore()}
+            })
+                .sort(function(a,b){
+                if(a.score < b.score){
+                    return -1;
+                }
+                if(a.score > b.score){
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        
         this.render = function(){  
             this.collection.forEach(function(player){
                 player.render();
