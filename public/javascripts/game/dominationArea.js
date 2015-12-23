@@ -19,7 +19,6 @@ define(function() {
         
 
         this.lifeTime = null;
-        this.renderTime = null;
         this.status = null;        
         
         this.init = function(){
@@ -30,9 +29,7 @@ define(function() {
             
             this.maxR = this.options.r;
             
-            this.lifeTime = 10000;        
-            
-            this.renderTime = Date.now();
+            this.lifeTime = 600;        
             
             this.status = DP_NORMAL;   
             
@@ -63,8 +60,9 @@ define(function() {
             return (Math.pow(x - this.position.x, 2) + Math.pow(y - this.position.y, 2) <= Math.pow(this.options.r, 2) );
         }
         
-        this.render = function(){
-            if(this.status == DP_NORMAL && Date.now() - this.renderTime > this.lifeTime){
+        
+        this.checkAndToggle = function(){
+            if(this.status == DP_NORMAL && this.lifeTime < 0){
                 this.status = DP_HIDING;
             }
             if(this.status == DP_HIDING){
@@ -81,18 +79,22 @@ define(function() {
                     this.options.r +=1;
                 }
                 else{
-                    this.renderTime = Date.now();
-                    this.lifeTime = this.getRandom(this.options.minLifeTime, this.options.maxLifeTime) * 1000;
+                    this.lifeTime = this.getRandom(this.options.minLifeTime, this.options.maxLifeTime) * 60;
                     this.status = DP_NORMAL;
                 }                
-            }
+            } 
+            this.lifeTime--;
+        }
+
+
+        
+        this.render = function(){
             this.ctx.save();
             this.ctx.fillStyle = this.options.color;
             this.ctx.beginPath();
             this.ctx.arc(this.position.x, this.position.y, this.options.r, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.restore();
-
         }
         
     }
