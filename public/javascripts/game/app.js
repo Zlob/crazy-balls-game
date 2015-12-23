@@ -6,7 +6,8 @@ requirejs.config({
         requirejs: "../../libs/requirejs/require",
         box2d: "../../libs/box2dweb/Box2D",
         io: "/socket.io/socket.io.js",
-        QRCode: "../../libs/qrcode-js/qrcode"
+        QRCode: "../../libs/qrcode-js/qrcode",
+        swal: "../../libs/sweetalert/dist/sweetalert.min",
     },
     shim: {
         bootstrap: {

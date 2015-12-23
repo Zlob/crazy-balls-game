@@ -101,15 +101,17 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
         this.getScores = function(){
             return this.collection
                 .map(function(player, id){
-                return {id : id,
-                        score : player.getScore()}
+                return {
+                    name    : player.name,
+                    score   : player.getScore()
+                }
             })
                 .sort(function(a,b){
                 if(a.score < b.score){
-                    return -1;
+                    return 1;
                 }
                 if(a.score > b.score){
-                    return 1;
+                    return -1;
                 }
                 return 0;
             });

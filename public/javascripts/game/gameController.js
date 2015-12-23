@@ -1,12 +1,13 @@
-define(['io', 'QRCode'], function (io) {
+define(['io', 'swal', 'QRCode'], function (io, swal) {
     var gameController = function(playersNum, game){
         this.playersNum = playersNum;
         this.gameId = null;
         this.game = game;
         this.players = 0;  
+        var self = this;
 
         this.init = function(){
-            var self = this;
+
             this.socket = io();
 
             this.socket.emit('addGame', {playersNum: self.playersNum});      
@@ -61,7 +62,56 @@ define(['io', 'QRCode'], function (io) {
             var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
             this.registerPlayerAction();
-            this.game.init(canvas);
+            this.game.init(canvas, this.gameOver);
+            this.showCountDown();
+        }
+        
+        this.gameOver = function(data){
+            var text = data.reduce(function(result, player ){
+                return result + "<tr>" + "<td>" + player.name + "</td>" + "<td>" + player.score + "</td>" + "</tr>";
+            }, '<tr><th>Player</th><th>Score</th></tr>');
+            text = '<table>' + text + '</table>';
+            swal({   
+                title: "Game Over",
+                text: text,
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Restart",
+                cancelButtonText: "Select another game",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                customClass: 'game-over',
+                html: true
+            }, function(isConfirm){
+                if (isConfirm) {
+                    window.location.reload();
+                }
+                else {
+                    window.location = "/";   
+                }});
+        }            
+            
+        
+        this.showCountDown = function(){
+            swal({   
+                title: "Game starts in",
+                text: "1",
+                showConfirmButton: false,
+                customClass: 'count-down'
+            });
+
+            var intervalId = window.setInterval(function(){
+                var countDownModal = $('.count-down');
+                var countDownModalCounter = $('.count-down > p').first();
+                var counter = parseInt(countDownModalCounter.html());
+                counter--;
+                countDownModalCounter.html(counter);
+                if(counter == 0){
+                    swal.close();
+                    window.clearInterval(intervalId);
+                    self.game.startGame();
+                }
+            }, 1000);
         }
     }
 

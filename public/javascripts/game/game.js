@@ -1,8 +1,9 @@
-define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScore'], function(box, Walls, Players, DominationArea, CountDown, PlayersScore){
+define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Players, DominationArea){
 
     
     var BEGINING = 0;
     var IN_PROCESS = 1;
+    var SHOW_SCORE = 3;
     var GAME_OVER =2;
     
     Game = function(playersNum){
@@ -12,6 +13,8 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
         this.status = BEGINING;
 
         this.playersNum = playersNum;
+        
+        this.gameOverCallback = null;
         
         this.gameOptions = {
             width : 1920,
@@ -42,16 +45,6 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
             minLifeTime : 5,
         }
         
-        this.counterOptions = {
-            initialCounter : 3,
-            fontColor : 'green',
-            font : "50px Arial",
-        }
-        
-        this.playersScoreOptions = {
-            fontColor : 'green',
-            font : "50px Arial"
-        }
         
         
         this.world =  null;        
@@ -63,9 +56,10 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
         this.canvas = null;
         this.ctx = null;       
 
-        this.init = function(canvas){
+        this.init = function(canvas, gameOverCallback){
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
+            this.gameOverCallback = gameOverCallback;
             this.world =  new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true); // doSleep флаг.
             
             this.walls = new Walls(this.world, this.ctx, this.gameOptions, this.wallsOptions).init();
@@ -73,10 +67,7 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
             this.players = new Players(this.world, this.ctx, this.gameOptions, this.playersOptions, this.scoreOptions).init(this.playersNum);
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
-            
-            this.countDown = new CountDown(this.ctx, this.gameOptions, this.counterOptions, this.startGame).init();
-            this.playersScore = new PlayersScore(this.ctx, this.gameOptions, this.playersScoreOptions);
-            
+                        
             window.setInterval(this.update, 1000 / 60);
         };
         
@@ -86,9 +77,13 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
         
         this.update = function() {
             self.world.Step(1/60, 10, 10);
-            self.calculateScore();
             
-            self.checkGameOver();
+            if(self.status == IN_PROCESS){
+                self.calculateScore();            
+                self.checkGameOver();
+                self.dominationArea.checkAndToggle();
+            }
+
             
             self.render();
             
@@ -131,15 +126,16 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
             this.clearCtx();          
             this.showBackGround();
             this.walls.render();
-            this.dominationArea.render();            
+            this.dominationArea.render();  
             this.players.render();
-            if(this.status == BEGINING){
-                this.countDown.render();    
-            }     
+            
             if(this.status == GAME_OVER){
-                this.playersScore.render();
-            }
+                this.gameOverCallback(this.players.getScores());
+                this.status = SHOW_SCORE;
+            }         
         }
+        
+
         
         this.clearCtx = function(){
             this.ctx.clearRect(0, 0, this.gameOptions.width, this.gameOptions.height);  
@@ -151,10 +147,9 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
         
         this.checkGameOver = function(){
             var gameIsOver = this.players.all().some(function(player){
-                return player.getScore() >= 0;
+                return player.getScore() >= 10;
             });
             if(gameIsOver){
-                this.playersScore.setScore(this.players.getScores());
                 this.status = GAME_OVER;
             }
         }
@@ -163,6 +158,7 @@ define(['box2d', 'walls', 'players', 'dominationArea', 'countDown', 'playersScor
             this.ctx.fillStyle = this.gameOptions.backgroundColor;
             this.ctx.fillRect(0, 0, this.gameOptions.width, this.gameOptions.height);
         }
-    }
+    };
+        
     return Game;
 })

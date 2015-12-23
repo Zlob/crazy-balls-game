@@ -6,7 +6,9 @@ define(['box2d'], function() {
         this.ctx = ctx;
         this.options = options; 
         this.gameOptions = gameOptions;
-        this.body = null;       
+        this.body = null;   
+        
+        this.name = 'Player';
         
         this.score = 0;
         this.lastFire = 0;
