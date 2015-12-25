@@ -6,13 +6,13 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
     var SHOW_SCORE = 3;
     var GAME_OVER =2;
     
-    Game = function(playersNum){
+    Game = function(){
         
         var self = this;
         
         this.status = BEGINING;
 
-        this.playersNum = playersNum;
+        this.playersNum = null;
         
         this.gameOverCallback = null;
         
@@ -56,9 +56,10 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.canvas = null;
         this.ctx = null;       
 
-        this.init = function(canvas, gameOverCallback){
+        this.init = function(canvas, playersNum, gameOverCallback){
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
+            this.playersNum = playersNum;
             this.gameOverCallback = gameOverCallback;
             this.world =  new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true); // doSleep флаг.
             
@@ -68,11 +69,15 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
                         
-            window.setInterval(this.update, 1000 / 60);
+            this.intervalId = window.setInterval(this.update, 1000 / 60);
         };
         
         this.startGame = function(){
             self.status = IN_PROCESS;
+        }
+        
+        this.endGame = function(){
+            window.clearInterval(this.intervalId);
         }
         
         this.update = function() {

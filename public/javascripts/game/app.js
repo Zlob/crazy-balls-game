@@ -20,8 +20,8 @@ requirejs.config({
 requirejs(["bootstrap", 'game', 'gameController'], function(bootstrap, Game, GameControl){   
     $( document ).ready(function(){
         var playersNum = $('#players_num').attr('data-store');
-        var game = new Game(playersNum);
-        var gameControl = new GameControl(playersNum, game);
+//         var game = new Game();
+        var gameControl = new GameControl(playersNum, Game);
         gameControl.init();
     });
 });

@@ -1,8 +1,8 @@
 define(['io', 'swal', 'QRCode'], function (io, swal) {
-    var gameController = function(playersNum, game){
+    var gameController = function(playersNum, Game){
         this.playersNum = playersNum;
         this.gameId = null;
-        this.game = game;
+        this.game = null;
         this.players = 0;  
         var self = this;
 
@@ -11,7 +11,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             this.socket = io();
 
             this.socket.emit('addGame', {playersNum: self.playersNum});      
-
+            this.socket.on('playerActions', this.playrsAction);
             this.socket.on('gameData', function(data){
                 self.gameId = data.gameId;
                 self.showLinks(data);
@@ -27,11 +27,8 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             });       
         }
 
-        this.registerPlayerAction = function(){
-            var self = this;
-            this.socket.on('playerActions', function(data){
-                self.game.playerAction(data);
-            });
+        this.playrsAction = function(data){
+            self.game.playerAction(data);
         }
 
         this.showLinks = function(data){
@@ -61,9 +58,15 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#202020;"></canvas>');       
             var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
-            this.registerPlayerAction();
-            this.game.init(canvas, this.gameOver);
+            this.game = new Game();
+            this.game.init(canvas, playersNum, this.gameOver);
             this.showCountDown();
+        }
+        
+        this.restartGame = function(){
+            this.socket.emit('restartGame', {gameId: this.gameId});
+            this.game.endGame();
+            this.startGame();
         }
         
         this.gameOver = function(data){
@@ -84,7 +87,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 html: true
             }, function(isConfirm){
                 if (isConfirm) {
-                    window.location.reload();
+                    self.restartGame();
                 }
                 else {
                     window.location = "/";   
@@ -95,7 +98,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         this.showCountDown = function(){
             swal({   
                 title: "Game starts in",
-                text: "1",
+                text: "5",
                 showConfirmButton: false,
                 customClass: 'count-down'
             });
