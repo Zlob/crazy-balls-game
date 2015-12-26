@@ -24,7 +24,8 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 if(self.players == self.playersNum){
                     self.startGame();
                 }
-            });       
+            }); 
+            this.addMenuEventListener();
         }
 
         this.playrsAction = function(data){
@@ -55,7 +56,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         }
         
         this.startGame = function(){
-            $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#202020;"></canvas>');       
+            $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#202020;"></canvas>');   
             var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
             this.game = new Game();
@@ -65,8 +66,41 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         
         this.restartGame = function(){
             this.socket.emit('restartGame', {gameId: this.gameId});
-            this.game.endGame();
             this.startGame();
+        }
+        
+        this.addMenuEventListener = function(){
+            $('body').keypress(function(event){
+                if(self.game != null && self.game.getStatus() === 1){
+                    self.showMenu();
+                    self.game.pauseGame();
+                }
+                else if(self.game != null && self.game.getStatus() === 0){
+                    swal.close();
+                    self.game.resumeGame();
+                }
+            });
+        }
+        
+        this.showMenu = function(){
+            swal({   
+                title: "Menu",
+                text: "Press any key to continue",
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Restart",
+                cancelButtonText: "Select another game",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                customClass: 'menu-msg',
+                allowEscapeKey: true,
+            }, function(isConfirm){
+                if (isConfirm) {
+                    self.restartGame();
+                }
+                else {
+                    window.location = "/";   
+                }});
         }
         
         this.gameOver = function(data){
@@ -84,6 +118,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 closeOnConfirm: false,
                 closeOnCancel: false,
                 customClass: 'game-over',
+                allowEscapeKey: false,
                 html: true
             }, function(isConfirm){
                 if (isConfirm) {
