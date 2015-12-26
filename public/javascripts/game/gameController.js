@@ -133,14 +133,15 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         this.showCountDown = function(){
             swal({   
                 title: "Game starts in",
-                text: "5",
+                text: "<p class='counter-field'>5</p><p>Press any key to enter the menu</p>",
                 showConfirmButton: false,
+                html: true,
                 customClass: 'count-down'
             });
 
             var intervalId = window.setInterval(function(){
                 var countDownModal = $('.count-down');
-                var countDownModalCounter = $('.count-down > p').first();
+                var countDownModalCounter = $('.counter-field').first();
                 var counter = parseInt(countDownModalCounter.html());
                 counter--;
                 countDownModalCounter.html(counter);
