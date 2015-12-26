@@ -1,20 +1,24 @@
 define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Players, DominationArea){
 
     
-    var BEGINING = 0;
+    var PAUSED = 0;
     var IN_PROCESS = 1;
-    var SHOW_SCORE = 3;
-    var GAME_OVER =2;
+    var FINISHED =2;
+    
+    var FPS_PAUSED = 0;
+    var FPS_IN_PROCESS  = 1/60;
     
     Game = function(){
         
         var self = this;
         
-        this.status = BEGINING;
+        this.status = PAUSED;
 
         this.playersNum = null;
         
         this.gameOverCallback = null;
+        
+        this.interval = 1/60;
         
         this.gameOptions = {
             width : 1920,
@@ -76,19 +80,43 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             self.status = IN_PROCESS;
         }
         
-        this.endGame = function(){
-            window.clearInterval(this.intervalId);
+        this.pauseGame = function(){
+            this.status = PAUSED;
+            this.stopPhysic();        
         }
         
+        this.resumeGame = function(){
+            this.status = IN_PROCESS;
+            this.startPhysic();
+        }
+        
+        
+        this.endGame = function(){
+            this.status = FINISHED;
+            this.stopPhysic();
+        }
+        
+        this.getStatus = function(){
+            return this.status;
+        }
+        
+        this.stopPhysic = function(){
+            this.interval = FPS_PAUSED;    
+        }
+        
+        this.startPhysic = function(){
+            this.interval = FPS_IN_PROCESS;
+        }
+        
+        
         this.update = function() {
-            self.world.Step(1/60, 10, 10);
+            self.world.Step(self.interval, 10, 10);
             
             if(self.status == IN_PROCESS){
                 self.calculateScore();            
                 self.checkGameOver();
                 self.dominationArea.checkAndToggle();
             }
-
             
             self.render();
             
@@ -132,12 +160,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             this.showBackGround();
             this.walls.render();
             this.dominationArea.render();  
-            this.players.render();
-            
-            if(this.status == GAME_OVER){
-                this.gameOverCallback(this.players.getScores());
-                this.status = SHOW_SCORE;
-            }         
+            this.players.render();      
         }
         
 
@@ -155,7 +178,8 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
                 return player.getScore() >= 10;
             });
             if(gameIsOver){
-                this.status = GAME_OVER;
+                this.endGame();
+                this.gameOverCallback(this.players.getScores());
             }
         }
         
