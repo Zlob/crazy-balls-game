@@ -73,7 +73,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
                         
-            this.intervalId = window.setInterval(this.update, 1000 / 60);
+            this.intervalId = window.setInterval(this._update, 1000 / 60);
         };
         
         this.startGame = function(){
@@ -82,17 +82,17 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         
         this.pauseGame = function(){
             this.status = PAUSED;
-            this.stopPhysic();        
+            this._stopPhysic();        
         }
         
         this.resumeGame = function(){
             this.status = IN_PROCESS;
-            this.startPhysic();
+            this._startPhysic();
         }        
         
         this.endGame = function(){
             this.status = FINISHED;
-            this.stopPhysic();
+            this._stopPhysic();
         }
         
         this.getStatus = function(){
@@ -102,29 +102,6 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.getPlayersScore = function(){
             return this.players.getScores();
         }
-        
-        this.stopPhysic = function(){
-            this.interval = FPS_PAUSED;    
-        }
-        
-        this.startPhysic = function(){
-            this.interval = FPS_IN_PROCESS;
-        }
-        
-        
-        this.update = function() {
-            self.world.Step(self.interval, 10, 10);
-            
-            if(self.status == IN_PROCESS){
-                self.calculateScore();            
-                self.checkGameOver();
-                self.dominationArea.checkAndToggle();
-            }
-            
-            self.render();
-            
-            self.world.ClearForces();            
-        };              
         
         this.playerAction = function(data){
             if (this.status != IN_PROCESS){
@@ -145,22 +122,44 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
                 }
             }
         }
-
-
+        
+        this._stopPhysic = function(){
+            this.interval = FPS_PAUSED;    
+        }
+        
+        this._startPhysic = function(){
+            this.interval = FPS_IN_PROCESS;
+        }
+        
+        
+        this._update = function() {
+            self.world.Step(self.interval, 10, 10);
+            
+            if(self.status == IN_PROCESS){
+                self._calculateScore();            
+                self._checkGameOver();
+                self.dominationArea.checkAndToggle();
+            }
+            
+            self._render();
+            
+            self.world.ClearForces();            
+        };            
+        
                 
-        this.calculateScore = function(){
+        this._calculateScore = function(){
             var self = this;
             this.players.all().forEach(function(player){
                 var playerPosition = player.body.GetPosition();
-                if(self.dominationArea.isInArea(self.toPixels(playerPosition.x), self.toPixels(playerPosition.y))){
+                if(self.dominationArea.isInArea(self._toPixels(playerPosition.x), self._toPixels(playerPosition.y))){
                     player.addScore(1);
                 }
             });
         }
         
-        this.render = function(){  
-            this.clearCtx();          
-            this.showBackGround();
+        this._render = function(){  
+            this._clearCtx();          
+            this._showBackGround();
             this.walls.render();
             this.dominationArea.render();  
             this.players.render();      
@@ -168,15 +167,15 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         
 
         
-        this.clearCtx = function(){
+        this._clearCtx = function(){
             this.ctx.clearRect(0, 0, this.gameOptions.width, this.gameOptions.height);  
         }
         
-        this.toPixels = function(metr){
+        this._toPixels = function(metr){
             return metr * this.gameOptions.pixelsInMetr;
         }
         
-        this.checkGameOver = function(){
+        this._checkGameOver = function(){
             var gameIsOver = this.players.all().some(function(player){
                 return player.getScore() >= 10;
             });
@@ -186,7 +185,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             }
         }
         
-        this.showBackGround = function(){
+        this._showBackGround = function(){
             this.ctx.fillStyle = this.gameOptions.backgroundColor;
             this.ctx.fillRect(0, 0, this.gameOptions.width, this.gameOptions.height);
         }
