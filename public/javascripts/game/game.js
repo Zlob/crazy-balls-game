@@ -88,8 +88,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.resumeGame = function(){
             this.status = IN_PROCESS;
             this.startPhysic();
-        }
-        
+        }        
         
         this.endGame = function(){
             this.status = FINISHED;
@@ -98,6 +97,10 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         
         this.getStatus = function(){
             return this.status;
+        }
+        
+        this.getPlayersScore = function(){
+            return this.players.getScores();
         }
         
         this.stopPhysic = function(){
@@ -179,7 +182,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             });
             if(gameIsOver){
                 this.endGame();
-                this.gameOverCallback(this.players.getScores());
+                this.gameOverCallback();
             }
         }
         

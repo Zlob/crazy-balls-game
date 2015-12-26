@@ -83,9 +83,11 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         }
         
         this.showMenu = function(){
+            var text = self.getPlayersScoreTable();
+            text += '<p>Press any key to continue</p>'
             swal({   
                 title: "Menu",
-                text: "Press any key to continue",
+                text: text,
                 showConfirmButton: true,
                 showCancelButton: true,
                 confirmButtonText: "Restart",
@@ -94,6 +96,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 closeOnCancel: false,
                 customClass: 'menu-msg',
                 allowEscapeKey: true,
+                html: true
             }, function(isConfirm){
                 if (isConfirm) {
                     self.restartGame();
@@ -104,10 +107,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         }
         
         this.gameOver = function(data){
-            var text = data.reduce(function(result, player ){
-                return result + "<tr>" + "<td>" + player.name + "</td>" + "<td>" + player.score + "</td>" + "</tr>";
-            }, '<tr><th>Player</th><th>Score</th></tr>');
-            text = '<table>' + text + '</table>';
+            var text = self.getPlayersScoreTable();
             swal({   
                 title: "Game Over",
                 text: text,
@@ -127,8 +127,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 else {
                     window.location = "/";   
                 }});
-        }            
-            
+        }                      
         
         this.showCountDown = function(){
             swal({   
@@ -151,6 +150,15 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                     self.game.startGame();
                 }
             }, 1000);
+        }
+        
+        this.getPlayersScoreTable = function(){
+            var data = self.game.getPlayersScore();
+            var text = data.reduce(function(result, player ){
+                return result + "<tr>" + "<td>" + player.name + "</td>" + "<td>" + player.score + "</td>" + "</tr>";
+            }, '<tr><th>Player</th><th>Score</th></tr>');
+            text = '<table>' + text + '</table>';
+            return text;
         }
     }
 
