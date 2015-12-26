@@ -13,8 +13,6 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         var self = this;
         
         this.status = PAUSED;
-
-        this.playersNum = null;
         
         this.gameOverCallback = null;
         
@@ -60,16 +58,15 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.canvas = null;
         this.ctx = null;       
 
-        this.init = function(canvas, playersNum, gameOverCallback){
+        this.init = function(canvas, players, gameOverCallback){
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
-            this.playersNum = playersNum;
             this.gameOverCallback = gameOverCallback;
             this.world =  new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true); // doSleep флаг.
             
             this.walls = new Walls(this.world, this.ctx, this.gameOptions, this.wallsOptions).init();
 
-            this.players = new Players(this.world, this.ctx, this.gameOptions, this.playersOptions, this.scoreOptions).init(this.playersNum);
+            this.players = new Players(this.world, this.ctx, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
                         

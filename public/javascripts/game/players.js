@@ -8,6 +8,7 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
         this.gameOptions = gameOptions;
         this.options = options;
         this.scoreOptions = scoreOptions;
+        var self = this;
           
         
         this.getPlayerOptions = function(number){
@@ -82,11 +83,14 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
             }
         }
         
-        this.init = function(count){
-            for(var i = 0; i < count; i++){
-                var scoreArea = new ScoreArea(this.world, this.ctx, this.getScoreAreaOptions(i)).init();
-                this.collection.push( new Player( this.world, this.ctx, this.gameOptions, scoreArea, this.getPlayerOptions(i) ).init() )
-            }
+        this.init = function(players){
+            players.forEach(function(player, index){
+                var scoreArea = new ScoreArea(self.world, self.ctx, self.getScoreAreaOptions(index)).init();
+                var playerOptions = self.getPlayerOptions(index);
+                playerOptions.name = player.playerName;
+                playerOptions.id = player.playerId;
+                self.collection.push( new Player( self.world, self.ctx, self.gameOptions, scoreArea, playerOptions ).init() )
+            });
             return this;
         };     
         

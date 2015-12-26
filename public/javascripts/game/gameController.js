@@ -3,7 +3,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         this.playersNum = playersNum;
         this.gameId = null;
         this.game = null;
-        this.players = 0;  
+        this.players = [];  
         var self = this;
 
         this.init = function(){
@@ -19,9 +19,9 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
 
             this.socket.on('addPlayer', function(data){
                 self.playerReady(data.playerId, data.playerName);
-                self.players++;
+                self.players.push(data);
 
-                if(self.players == self.playersNum){
+                if(self.players.length == self.playersNum){
                     self.startGame();
                 }
             }); 
@@ -60,7 +60,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
             this.game = new Game();
-            this.game.init(canvas, playersNum, this.gameOver);
+            this.game.init(canvas, this.players, this.gameOver);
             this.showCountDown();
         }
         
