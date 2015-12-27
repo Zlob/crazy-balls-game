@@ -22,27 +22,29 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             width : 1920,
             height : 1080,
             pixelsInMetr : 30,
-            backgroundColor : '#202020'
+            backgroundColor : '#CFD8DC'
         };
         
         this.wallsOptions = {
-            size  : this.gameOptions.pixelsInMetr,
-            color : 'grey'
+            size  : this.gameOptions.pixelsInMetr*1.5,
+            color : '#263238'
         }
         
         this.playersOptions = {
             r     :  this.gameOptions.pixelsInMetr,
-            color : ['green', 'yellow', 'blue', 'brown']
+            color : ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B'],
+            flashColor : ['#FFCDD2', '#BBDEFB', '#C8E6C9', '#FFF9C4']
         }
         
         this.scoreOptions = {
             font : "24px Arial",
+            wallSize : this.wallsOptions.size,
             color: ['white', 'white', 'white', 'white']            
         }
         
         this.dominationAreaOptions = {
             r : this.gameOptions.pixelsInMetr * 2,
-            color : 'red',
+            color : '#263238',
             maxLifeTime : 30,
             minLifeTime : 5,
         }
@@ -149,7 +151,11 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             this.players.all().forEach(function(player){
                 var playerPosition = player.body.GetPosition();
                 if(self.dominationArea.isInArea(self._toPixels(playerPosition.x), self._toPixels(playerPosition.y))){
+                    player.setIsFlashing(true);
                     player.addScore(1);
+                }
+                else{
+                    player.setIsFlashing(false);
                 }
             });
         }
@@ -174,7 +180,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         
         this._checkGameOver = function(){
             var gameIsOver = this.players.all().some(function(player){
-                return player.getScore() >= 10;
+                return player.getScore() >= 10000;
             });
             if(gameIsOver){
                 this.endGame();

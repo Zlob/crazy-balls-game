@@ -14,35 +14,39 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
         this.getPlayerOptions = function(number){
             if(number == '0'){
                 return {
-                    x      : this.options.r * 4,
-                    y      : this.options.r * 4,
-                    r      : this.options.r,
-                    color  : this.options.color[number] 
+                    x           : this.options.r * 4,
+                    y           : this.options.r * 4,
+                    r           : this.options.r,
+                    color       : this.options.color[number],
+                    flashColor  : this.options.flashColor[number]
                 }
             }
             if(number == '1'){
                 return {
-                    x      : this.gameOptions.width - this.options.r * 4,
-                    y      : this.options.r * 4,
-                    r      : this.options.r,
-                    color  : this.options.color[number]
+                    x           : this.gameOptions.width - this.options.r * 4,
+                    y           : this.options.r * 4,
+                    r           : this.options.r,
+                    color       : this.options.color[number],
+                    flashColor  : this.options.flashColor[number]
                 }
             }
             if(number == '2'){
                 return {
-                    x      : this.options.r * 4,
-                    y      : this.gameOptions.height - this.options.r * 4,
-                    r      : this.options.r,
-                    color  : this.options.color[number]
+                    x           : this.options.r * 4,
+                    y           : this.gameOptions.height - this.options.r * 4,
+                    r           : this.options.r,
+                    color       : this.options.color[number],
+                    flashColor  : this.options.flashColor[number]
                 }
             }
 
             if(number == '3'){
                 return {
-                    x      : this.gameOptions.width - this.options.r * 4,
-                    y      : this.gameOptions.height - this.options.r * 4,
-                    r      : this.options.r,
-                    color  : this.options.color[number]
+                    x           : this.gameOptions.width - this.options.r * 4,
+                    y           : this.gameOptions.height - this.options.r * 4,
+                    r           : this.options.r,
+                    color       : this.options.color[number],
+                    flashColor  : this.options.flashColor[number]
                 }
             }            
         };
@@ -50,35 +54,43 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
         this.getScoreAreaOptions = function(number){
             if(number == '0'){
                 return {
-                    x      : this.options.r,
-                    y      : this.options.r - 4,
+                    x      : this.scoreOptions.wallSize,
+                    y      : this.scoreOptions.wallSize/2,
                     font   : this.scoreOptions.font,
-                    color  : this.scoreOptions.color[number]
+                    color  : this.scoreOptions.color[number],
+                    textAlign : 'start',
+                    textBaseline : 'middle'
                 }
             }
             if(number == '1'){
                 return {
-                    x      : this.gameOptions.width - this.options.r,
-                    y      : this.options.r - 4,
+                    x      : this.gameOptions.width - this.scoreOptions.wallSize,
+                    y      : this.scoreOptions.wallSize/2,
                     font   : this.scoreOptions.font,
-                    color  : this.scoreOptions.color[number]
+                    color  : this.scoreOptions.color[number],
+                    textAlign : 'end',
+                    textBaseline : 'middle'
                 }
             }
             if(number == '2'){
                 return {
-                    x      : this.options.r,
-                    y      : this.gameOptions.height - 4,
+                    x      : this.scoreOptions.wallSize,
+                    y      : this.gameOptions.height - this.scoreOptions.wallSize/2,
                     font   : this.scoreOptions.font,
-                    color  : this.scoreOptions.color[number]
+                    color  : this.scoreOptions.color[number],
+                    textAlign : 'start',
+                    textBaseline : 'middle'
                 }
             }
 
             if(number == '3'){
                 return {
-                    x      : this.gameOptions.width - this.options.r,
-                    y      : this.gameOptions.height - 4,
+                    x      : this.gameOptions.width - this.scoreOptions.wallSize,
+                    y      : this.gameOptions.height - this.scoreOptions.wallSize/2,
                     font   : this.scoreOptions.font,
-                    color  : this.scoreOptions.color[number]
+                    color  : this.scoreOptions.color[number],
+                    textAlign : 'end',
+                    textBaseline : 'middle'
                 }
             }
         }

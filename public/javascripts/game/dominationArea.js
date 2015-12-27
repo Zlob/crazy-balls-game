@@ -94,6 +94,7 @@ define(function() {
             this.ctx.beginPath();
             this.ctx.arc(this.position.x, this.position.y, this.options.r, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.stroke();
             this.ctx.restore();
         }
         

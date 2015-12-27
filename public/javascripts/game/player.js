@@ -1,4 +1,7 @@
 define(['box2d'], function() {
+    
+    var LIGHTER = 1;
+    var DARKER = 2;
         
     var Player = function(world, ctx, gameOptions, scoreArea, options){
                         
@@ -10,8 +13,12 @@ define(['box2d'], function() {
         
         this.name = options.name;
         this.id = options.id;
+        this.isFlashing = false;
+        this.flashingStage = LIGHTER;
+        this.flashingCount = 0;
+        this.maxFlashingCount = 10;
         
-        this.score = 0;
+        this.score = 1000;
         this.lastFire = 0;
         this.scoreArea = scoreArea;
         
@@ -53,19 +60,50 @@ define(['box2d'], function() {
         this.getScore = function(){
             return this.score;
         }
+        
+        this.setIsFlashing = function(value){
+//             if(value == true && this.isFlashing != value){
+//                 this.flashingStage = LIGHTER;
+//             }
+            this.isFlashing = value;
+        }
      
         this.render = function(){
             this.ctx.save();
             var position = this.body.GetPosition();
             var x = position.x * 30;
             var y = position.y * 30;
-            this.ctx.fillStyle = this.options.color;
+            this.ctx.fillStyle = this.getColor();
             this.ctx.beginPath();
             this.ctx.arc(x, y, this.options.r, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.stroke();
             this.ctx.restore();
             this.scoreArea.render(this.getScore());
         }
+        
+        this.getColor = function(){
+            if(this.isFlashing){
+                if(this.flashingStage == LIGHTER){
+                    this.flashingCount++;
+                    if(this.flashingCount >= this.maxFlashingCount){
+                        this.flashingStage = DARKER;
+                    }
+                    return this.options.flashColor;
+                }
+                else{
+                    this.flashingCount--;
+                    if(this.flashingCount <= 0){
+                        this.flashingStage = LIGHTER;
+                    }
+                    return this.options.color;
+                }
+            }
+            else{
+                return this.options.color;
+            }
+        }
+        
         
         this.toMetr = function(pixels){
             return pixels / this.gameOptions.pixelsInMetr;

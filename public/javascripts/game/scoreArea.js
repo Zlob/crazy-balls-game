@@ -15,6 +15,8 @@ define(['box2d'], function() {
             this.ctx.save();
             this.ctx.fillStyle = this.options.color;
             this.ctx.font = this.options.font;
+            this.ctx.textAlign = this.options.textAlign;
+            this.ctx.textBaseline = this.options.textBaseline;
             this.ctx.fillText(score, this.options.x, this.options.y);
             this.ctx.restore();
 
