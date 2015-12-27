@@ -48,7 +48,25 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     color       : this.options.color[number],
                     flashColor  : this.options.flashColor[number]
                 }
-            }            
+            } 
+            if(number == '4'){
+                return {
+                    x           : this.gameOptions.width/2,
+                    y           : this.options.r * 4,
+                    r           : this.options.r,
+                    color       : this.options.color[number],
+                    flashColor  : this.options.flashColor[number]
+                }
+            }   
+            if(number == '5'){
+                return {
+                    x           : this.gameOptions.width/2,
+                    y           : this.gameOptions.height - this.options.r * 4,
+                    r           : this.options.r,
+                    color       : this.options.color[number],
+                    flashColor  : this.options.flashColor[number]
+                }
+            }   
         };
         
         this.getScoreAreaOptions = function(number){
@@ -90,6 +108,26 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     font   : this.scoreOptions.font,
                     color  : this.scoreOptions.color[number],
                     textAlign : 'end',
+                    textBaseline : 'middle'
+                }
+            }
+            if(number == '4'){
+                return {
+                    x      : this.gameOptions.width/2,
+                    y      : this.scoreOptions.wallSize/2,
+                    font   : this.scoreOptions.font,
+                    color  : this.scoreOptions.color[number],
+                    textAlign : 'center',
+                    textBaseline : 'middle'
+                }
+            }
+            if(number == '5'){
+                return {
+                    x      : this.gameOptions.width/2,
+                    y      : this.gameOptions.height - this.scoreOptions.wallSize/2,
+                    font   : this.scoreOptions.font,
+                    color  : this.scoreOptions.color[number],
+                    textAlign : 'center',
                     textBaseline : 'middle'
                 }
             }

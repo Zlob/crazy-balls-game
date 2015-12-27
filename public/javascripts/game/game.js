@@ -32,14 +32,14 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         
         this.playersOptions = {
             r     :  this.gameOptions.pixelsInMetr,
-            color : ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B'],
-            flashColor : ['#FFCDD2', '#BBDEFB', '#C8E6C9', '#FFF9C4']
+            color : ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B', '#9C27B0', '#FF9800'],
+            flashColor : ['#FFCDD2', '#BBDEFB', '#C8E6C9', '#FFF9C4', '#E1BEE7', '#FFE0B2']
         }
         
         this.scoreOptions = {
             font : "24px 'Press Start 2P'",
             wallSize : this.wallsOptions.size,
-            color: ['white', 'white', 'white', 'white']            
+            color: ['white', 'white', 'white', 'white', 'white', 'white']            
         }
         
         this.dominationAreaOptions = {
