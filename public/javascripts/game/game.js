@@ -37,7 +37,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         }
         
         this.scoreOptions = {
-            font : "24px Arial",
+            font : "24px 'Press Start 2P'",
             wallSize : this.wallsOptions.size,
             color: ['white', 'white', 'white', 'white']            
         }

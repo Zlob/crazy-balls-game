@@ -42,3 +42,8 @@
     top: 760px; 
     left: 760px;
 }
+
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('@import url(https://fonts.googleapis.com/css?family=Press+Start+2P&subset=latin,cyrillic);');
+}
