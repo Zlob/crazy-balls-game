@@ -18,7 +18,8 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     y           : this.options.r * 4,
                     r           : this.options.r,
                     color       : this.options.color[number],
-                    flashColor  : this.options.flashColor[number]
+                    flashColor  : this.options.flashColor[number],
+                    borderColor : this.options.borderColor[number]
                 }
             }
             if(number == '1'){
@@ -27,7 +28,8 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     y           : this.options.r * 4,
                     r           : this.options.r,
                     color       : this.options.color[number],
-                    flashColor  : this.options.flashColor[number]
+                    flashColor  : this.options.flashColor[number],
+                    borderColor : this.options.borderColor[number]
                 }
             }
             if(number == '2'){
@@ -36,7 +38,8 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     y           : this.gameOptions.height - this.options.r * 4,
                     r           : this.options.r,
                     color       : this.options.color[number],
-                    flashColor  : this.options.flashColor[number]
+                    flashColor  : this.options.flashColor[number],
+                    borderColor : this.options.borderColor[number]
                 }
             }
 
@@ -46,7 +49,8 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     y           : this.gameOptions.height - this.options.r * 4,
                     r           : this.options.r,
                     color       : this.options.color[number],
-                    flashColor  : this.options.flashColor[number]
+                    flashColor  : this.options.flashColor[number],
+                    borderColor : this.options.borderColor[number]
                 }
             } 
             if(number == '4'){
@@ -55,7 +59,8 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     y           : this.options.r * 4,
                     r           : this.options.r,
                     color       : this.options.color[number],
-                    flashColor  : this.options.flashColor[number]
+                    flashColor  : this.options.flashColor[number],
+                    borderColor : this.options.borderColor[number]
                 }
             }   
             if(number == '5'){
@@ -64,7 +69,8 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                     y           : this.gameOptions.height - this.options.r * 4,
                     r           : this.options.r,
                     color       : this.options.color[number],
-                    flashColor  : this.options.flashColor[number]
+                    flashColor  : this.options.flashColor[number],
+                    borderColor : this.options.borderColor[number]
                 }
             }   
         };

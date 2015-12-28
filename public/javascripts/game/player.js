@@ -93,6 +93,7 @@ define(['box2d'], function() {
             this.ctx.beginPath();
             this.ctx.arc(x, y, this.options.r, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.strokeStyle = this.options.borderColor;
             this.ctx.stroke();
             this.ctx.restore();
             this.scoreArea.render(this.getScore());

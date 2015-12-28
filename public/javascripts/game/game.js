@@ -36,6 +36,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.playersOptions = {
             r     :  this.gameOptions.pixelsInMetr,
             color : ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B', '#9C27B0', '#FF9800'],
+            borderColor : ['#B71C1C', '#0D47A1', '#1B5E20', '#F57F17', '#4A148C', '#E65100'],
             flashColor : ['#FFCDD2', '#BBDEFB', '#C8E6C9', '#FFF9C4', '#E1BEE7', '#FFE0B2']
         }
         
