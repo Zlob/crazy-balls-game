@@ -1,6 +1,7 @@
 define(['box2d'], function() {
         
     var wall = function(world, ctx, options){
+        this.type = 'Wall';
         this.world = world;
         this.ctx = ctx;
         this.options = options;   
@@ -21,6 +22,7 @@ define(['box2d'], function() {
             bodyDef.position.Set(this.toMetr(this.options.x + this.options.width/2), this.toMetr(this.options.y + this.options.height/2));
             this.body = this.world.CreateBody(bodyDef);
             this.body.CreateFixture(fixDef);
+            this.body.SetUserData(this);
             return this;
         }
         

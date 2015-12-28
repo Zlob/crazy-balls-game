@@ -5,6 +5,7 @@ define(['box2d'], function() {
         
     var Player = function(world, ctx, gameOptions, scoreArea, options){
                         
+        this.type = 'Player';
         this.world = world;
         this.ctx = ctx;
         this.options = options; 
@@ -22,6 +23,7 @@ define(['box2d'], function() {
         this.lastFire = 0;
         this.scoreArea = scoreArea;
         this.scoreAudio = null;
+        this.bounceAudios = [];
         
         this.init = function(){
             var fixDef = new Box2D.Dynamics.b2FixtureDef();
@@ -37,7 +39,16 @@ define(['box2d'], function() {
             bodyDef.position.Set(this.toMetr(this.options.x), this.toMetr(this.options.y));
             this.body = this.world.CreateBody(bodyDef);    
             this.body.CreateFixture(fixDef);  
+            this.body.SetUserData(this);
             this.scoreAudio = new Audio(this.gameOptions.scoreSound);
+            
+            //load audio 5 times to simulate a number bounces per time
+            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
+            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
+            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
+            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
+            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
+            
             return this;
         }    
 
@@ -106,6 +117,16 @@ define(['box2d'], function() {
             }
             else{
                 return this.options.color;
+            }
+        }
+        
+        this.playBounce = function(){
+            for(var i = 0; i  < this.bounceAudios.length; i++){
+                var audio = this.bounceAudios[i];
+                if(audio.paused){
+                    audio.play();
+                    break;
+                }
             }
         }
         

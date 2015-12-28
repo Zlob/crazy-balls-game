@@ -24,7 +24,8 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             pixelsInMetr : 30,
             backgroundColor : '#CFD8DC',
             gameMusic : '/dominator/sounds/music_1.wav',
-            scoreSound : '/dominator/sounds/coin_2.wav'
+            scoreSound : '/dominator/sounds/coin_2.wav',
+            bounceSound: '/dominator/sounds/bounce_1.wav'
         };
         
         this.wallsOptions = {
@@ -67,13 +68,15 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
             this.gameOverCallback = gameOverCallback;
-            this.world =  new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true); // doSleep флаг.
+            this.world =  new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true); // doSleep флаг.          
             
             this.walls = new Walls(this.world, this.ctx, this.gameOptions, this.wallsOptions).init();
 
             this.players = new Players(this.world, this.ctx, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
+            
+            this._setCollisionListener();
             
             this.audio = new Audio(this.gameOptions.gameMusic);
                         
@@ -128,6 +131,30 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
                     }
                 }
             }
+        }
+        
+        this._setCollisionListener = function(){
+            var listener = new Box2D.Dynamics.b2ContactListener;
+            listener.BeginContact = function(contact) {
+                var objectA = contact.GetFixtureA().GetBody().GetUserData();
+                var objectB = contact.GetFixtureB().GetBody().GetUserData();
+                if(objectA.type == 'Player' || objectB.type == 'Player' ){
+                    var player = objectA.type == 'Player' ? objectA : objectB;
+                    player.playBounce();
+                }
+                
+                
+            }
+            listener.EndContact = function(contact) {
+
+            }
+            listener.PostSolve = function(contact, impulse) {
+
+            }
+            listener.PreSolve = function(contact, oldManifold) {
+
+            }
+            this.world.SetContactListener(listener);
         }
         
         this._stopPhysic = function(){
