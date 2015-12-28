@@ -23,7 +23,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             height : 1080,
             pixelsInMetr : 30,
             backgroundColor : '#CFD8DC',
-            gameMusic : '/dominator/sounds/music_1.wav',
+            gameMusic : '/dominator/sounds/music_1.ogg',
             scoreSound : '/dominator/sounds/coin_2.wav',
             bounceSound: '/dominator/sounds/bounce_1.wav'
         };
