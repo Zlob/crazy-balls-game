@@ -18,9 +18,10 @@ define(['box2d'], function() {
         this.flashingCount = 0;
         this.maxFlashingCount = 10;
         
-        this.score = 1000;
+        this.score = 0;
         this.lastFire = 0;
         this.scoreArea = scoreArea;
+        this.scoreAudio = null;
         
         this.init = function(){
             var fixDef = new Box2D.Dynamics.b2FixtureDef();
@@ -36,7 +37,7 @@ define(['box2d'], function() {
             bodyDef.position.Set(this.toMetr(this.options.x), this.toMetr(this.options.y));
             this.body = this.world.CreateBody(bodyDef);    
             this.body.CreateFixture(fixDef);  
-
+            this.scoreAudio = new Audio(this.gameOptions.scoreSound);
             return this;
         }    
 
@@ -62,9 +63,13 @@ define(['box2d'], function() {
         }
         
         this.setIsFlashing = function(value){
-//             if(value == true && this.isFlashing != value){
-//                 this.flashingStage = LIGHTER;
-//             }
+            if(value == true && this.isFlashing != value){
+                this.scoreAudio.loop = true;
+                this.scoreAudio.play();                
+            }
+            else if(value == false && this.isFlashing != value){
+                this.scoreAudio.loop = false;
+            }
             this.isFlashing = value;
         }
      

@@ -22,7 +22,9 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             width : 1920,
             height : 1080,
             pixelsInMetr : 30,
-            backgroundColor : '#CFD8DC'
+            backgroundColor : '#CFD8DC',
+            gameMusic : '/dominator/sounds/music_1.wav',
+            scoreSound : '/dominator/sounds/coin_2.wav'
         };
         
         this.wallsOptions = {
@@ -58,7 +60,8 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.countDown = null;
         this.playersScore = null;
         this.canvas = null;
-        this.ctx = null;       
+        this.ctx = null;   
+        this.audio = null;
 
         this.init = function(canvas, players, gameOverCallback){
             this.canvas = canvas;
@@ -71,17 +74,22 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             this.players = new Players(this.world, this.ctx, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
+            
+            this.audio = new Audio(this.gameOptions.gameMusic);
                         
             this.intervalId = window.setInterval(this._update, 1000 / 60);
         };
         
         this.startGame = function(){
+            this.audio.loop = true;
+            this.audio.play();
             self.status = IN_PROCESS;
         }
         
         this.pauseGame = function(){
             this.status = PAUSED;
-            this._stopPhysic();        
+            this._stopPhysic();  
+            this.audio.pause();
         }
         
         this.resumeGame = function(){
