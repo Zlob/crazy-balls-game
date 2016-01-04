@@ -137,20 +137,22 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this._setCollisionListener = function(){
             var listener = new Box2D.Dynamics.b2ContactListener;
             listener.BeginContact = function(contact) {
-                var objectA = contact.GetFixtureA().GetBody().GetUserData();
-                var objectB = contact.GetFixtureB().GetBody().GetUserData();
-                if(objectA.type == 'Player' || objectB.type == 'Player' ){
-                    var player = objectA.type == 'Player' ? objectA : objectB;
-                    player.playBounce();
-                }
-                
-                
+              
             }
             listener.EndContact = function(contact) {
 
             }
             listener.PostSolve = function(contact, impulse) {
-
+                var objectA = contact.GetFixtureA().GetBody().GetUserData();
+                var objectB = contact.GetFixtureB().GetBody().GetUserData();
+                if(objectA.type == 'Player' || objectB.type == 'Player' && impulse.normalImpulses[0] >= 1 ){
+                    //todo нормировать относительно максимального импульса исходя их конфигов массы и макисмального ускорения?
+                    var player = objectA.type == 'Player' ? objectA : objectB;
+                    var volume = impulse.normalImpulses[0] <= 50 ? impulse.normalImpulses[0] / 50 : 1;
+                    player.playBounce(volume);
+                    console.log(impulse.normalImpulses[0]);
+                    
+                } 
             }
             listener.PreSolve = function(contact, oldManifold) {
 

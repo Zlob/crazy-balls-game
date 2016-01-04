@@ -19,7 +19,9 @@ define(function() {
         
 
         this.lifeTime = null;
-        this.status = null;        
+        this.status = null;   
+        this.backgroundImage = null;
+        this.backgroundAngle = 0;
         
         this.init = function(){
             this.position =  {
@@ -32,6 +34,8 @@ define(function() {
             this.lifeTime = 600;        
             
             this.status = DP_NORMAL;   
+            this.backgroundImage = new Image();
+            this.backgroundImage.src = "/dominator/imgs/radial.png";
             
             return this;
         }
@@ -84,17 +88,26 @@ define(function() {
                 }                
             } 
             this.lifeTime--;
+            this.backgroundAngle +=0.005;
         }
 
 
         
-        this.render = function(){
+        this.render = function(){ 
             this.ctx.save();
             this.ctx.fillStyle = this.options.color;
             this.ctx.beginPath();
             this.ctx.arc(this.position.x, this.position.y, this.options.r, 0, Math.PI * 2);
+            this.ctx.clip();
+//             this.ctx.stroke();
+            this.ctx.closePath();
+            this.ctx.translate(this.position.x, this.position.y);
+            this.ctx.rotate(this.backgroundAngle);
+            this.ctx.drawImage(this.backgroundImage ,- this.maxR, -this.maxR, this.maxR*2, this.maxR*2 );
+            this.ctx.rotate(-this.backgroundAngle);
+            this.ctx.translate(-this.position.x, -this.position.y);         
+            this.ctx.globalAlpha = 0.2;
             this.ctx.fill();
-            this.ctx.stroke();
             this.ctx.restore();
         }
         

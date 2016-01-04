@@ -121,10 +121,11 @@ define(['box2d'], function() {
             }
         }
         
-        this.playBounce = function(){
+        this.playBounce = function(volume){
             for(var i = 0; i  < this.bounceAudios.length; i++){
                 var audio = this.bounceAudios[i];
                 if(audio.paused){
+                    audio.volume = volume;
                     audio.play();
                     break;
                 }
