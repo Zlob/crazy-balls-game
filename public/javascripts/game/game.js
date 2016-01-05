@@ -8,7 +8,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
     var FPS_PAUSED = 0;
     var FPS_IN_PROCESS  = 1/60;
     
-    Game = function(){
+    Game = function(config){
         
         var self = this;
         
@@ -18,14 +18,13 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         
         this.interval = 1/60;
         
+        this.config = config;
+        
         this.gameOptions = {
             width : 1920,
             height : 1080,
             pixelsInMetr : 30,
-            backgroundColor : '#CFD8DC',
-            gameMusic : '/dominator/sounds/music_1.ogg',
-            scoreSound : '/dominator/sounds/coin_2.wav',
-            bounceSound: '/dominator/sounds/bounce_1.wav'
+            backgroundColor : '#CFD8DC'
         };
         
         this.wallsOptions = {
@@ -63,7 +62,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
         this.playersScore = null;
         this.canvas = null;
         this.ctx = null;   
-        this.audio = null;
+        this.backgroundAudio = this.config.gameOptions.backgroundAudio;
 
         this.init = function(canvas, players, gameOverCallback){
             this.canvas = canvas;
@@ -73,31 +72,30 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             
             this.walls = new Walls(this.world, this.ctx, this.gameOptions, this.wallsOptions).init();
 
-            this.players = new Players(this.world, this.ctx, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
+            this.players = new Players(this.world, this.ctx, this.config, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
             
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
             
-            this._setCollisionListener();
-            
-            this.audio = new Audio(this.gameOptions.gameMusic);
+            this._setCollisionListener();            
                         
             this.intervalId = window.setInterval(this._update, 1000 / 60);
         };
         
         this.startGame = function(){
-            this.audio.loop = true;
-            this.audio.play();
+            this.backgroundAudio.loop = true;
+            this.backgroundAudio.play();
             self.status = IN_PROCESS;
         }
         
         this.pauseGame = function(){
             this.status = PAUSED;
             this._stopPhysic();  
-            this.audio.pause();
+            this.backgroundAudio.pause();
         }
         
         this.resumeGame = function(){
             this.status = IN_PROCESS;
+            this.backgroundAudio.play();
             this._startPhysic();
         }        
         

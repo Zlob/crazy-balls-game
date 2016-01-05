@@ -1,6 +1,7 @@
 define(['io', 'swal', 'QRCode'], function (io, swal) {
-    var gameController = function(playersNum, Game){
+    var gameController = function(playersNum, Game, config){
         this.playersNum = playersNum;
+        this.config = config;
         this.gameId = null;
         this.game = null;
         this.players = [];  
@@ -59,7 +60,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#202020;"></canvas>');   
             var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
-            this.game = new Game();
+            this.game = new Game(this.config);
             this.game.init(canvas, this.players, this.gameOver);
             this.showCountDown();
         }

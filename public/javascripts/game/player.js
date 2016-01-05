@@ -3,13 +3,14 @@ define(['box2d'], function() {
     var LIGHTER = 1;
     var DARKER = 2;
         
-    var Player = function(world, ctx, gameOptions, scoreArea, options){
+    var Player = function(world, ctx, config, gameOptions, scoreArea, options){
                         
         this.type = 'Player';
         this.world = world;
         this.ctx = ctx;
         this.options = options; 
         this.gameOptions = gameOptions;
+        this.config = config;
         this.body = null;   
         
         this.name = options.name;
@@ -40,15 +41,13 @@ define(['box2d'], function() {
             this.body = this.world.CreateBody(bodyDef);    
             this.body.CreateFixture(fixDef);  
             this.body.SetUserData(this);
-            this.scoreAudio = new Audio(this.gameOptions.scoreSound);
+            this.scoreAudio = this.config.gameOptions.scoreAudio.cloneNode(true);
             
             //load audio 5 times to simulate a number bounces per time
-            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
-            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
-            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
-            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
-            this.bounceAudios.push(new Audio(this.gameOptions.bounceSound));
-            
+            for(var i = 0; i < 5; i++){
+                this.bounceAudios.push(this.config.gameOptions.bounceAudio.cloneNode(true));    
+            };
+//             this.bounceAudios.push(new Audio('/dominator/sounds/bounce_1.wav'));            
             return this;
         }    
 

@@ -1,10 +1,11 @@
 define(['player', 'scoreArea'], function(Player, ScoreArea) {
-    var players = function(world, ctx, gameOptions, options, scoreOptions ){
+    var players = function(world, ctx, config, gameOptions, options, scoreOptions ){
         
         this.world = world;
         this.ctx =  ctx;
         this.collection = [];
         
+        this.config = config;
         this.gameOptions = gameOptions;
         this.options = options;
         this.scoreOptions = scoreOptions;
@@ -145,7 +146,7 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
                 var playerOptions = self.getPlayerOptions(index);
                 playerOptions.name = player.playerName;
                 playerOptions.id = player.playerId;
-                self.collection.push( new Player( self.world, self.ctx, self.gameOptions, scoreArea, playerOptions ).init() )
+                self.collection.push( new Player( self.world, self.ctx, self.config, self.gameOptions, scoreArea, playerOptions ).init() )
             });
             return this;
         };     

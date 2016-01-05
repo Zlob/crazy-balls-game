@@ -17,10 +17,11 @@ requirejs.config({
 });
 
 
-requirejs(["bootstrap", 'game', 'gameController'], function(bootstrap, Game, GameControl){   
+requirejs(["bootstrap", 'game', 'gameController', 'Config'], function(bootstrap, Game, GameControl, Config){   
     $( document ).ready(function(){
         var playersNum = $('#players_num').attr('data-store');
-        var gameControl = new GameControl(playersNum, Game);
+        var config = new Config();
+        var gameControl = new GameControl(playersNum, Game, config);
         gameControl.init();
     });
 });
