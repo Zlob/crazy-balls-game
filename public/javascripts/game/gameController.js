@@ -4,6 +4,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         this.config = config;
         this.gameId = null;
         this.game = null;
+        this.canvas = null;
         this.players = [];  
         var self = this;
 
@@ -26,8 +27,14 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                     self.startGame();
                 }
             }); 
+            
             this.addMenuEventListener();
-        }
+
+            this.canvas = this._getCanvas();
+            
+            this.game = new Game(this.config, this.canvas, this.playersNum);
+
+        }       
 
         this.playrsAction = function(data){
             self.game.playerAction(data);
@@ -57,11 +64,10 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         }
         
         this.startGame = function(){
-            $('body').empty().append('<canvas id="canvas" width="1920" height="1080" style="background-color:#202020;"></canvas>');   
+            $('body').empty().append(this.canvas);   
             var canvas = $('#canvas').get(0);
             this.socket.emit('startGame', {gameId: this.gameId});
-            this.game = new Game(this.config);
-            this.game.init(canvas, this.players, this.gameOver);
+            this.game.init(this.players, this.gameOver);
             this.showCountDown();
         }
         
@@ -72,11 +78,11 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         
         this.addMenuEventListener = function(){
             $('body').keypress(function(event){
-                if(self.game != null && self.game.getStatus() === 1){
+                if(self.game.getStatus() === 1){
                     self.showMenu();
                     self.game.pauseGame();
                 }
-                else if(self.game != null && self.game.getStatus() === 0){
+                else if(self.game.getStatus() === 0){
                     swal.close();
                     self.game.resumeGame();
                 }
@@ -160,6 +166,19 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             }, '<tr><th>Player</th><th>Score</th></tr>');
             text = '<table>' + text + '</table>';
             return text;
+        }
+        
+        this._getCanvas = function(){
+            var canvas = document.createElement('canvas');
+            var width = document.createAttribute('width');
+            width.value = 1920;
+            canvas.setAttributeNode(width);
+            
+            var height = document.createAttribute('height');
+            height.value = 1080;
+            canvas.setAttributeNode(height);
+            canvas.setAttribute('id', 'canvas');
+            return canvas;
         }
     }
 

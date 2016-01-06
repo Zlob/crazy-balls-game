@@ -1,4 +1,4 @@
-define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Players, DominationArea){
+define(['box2d', 'Sound', 'walls', 'players', 'dominationArea'], function(box, Sound, Walls, Players, DominationArea){
 
     
     var PAUSED = 0;
@@ -8,11 +8,11 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
     var FPS_PAUSED = 0;
     var FPS_IN_PROCESS  = 1/60;
     
-    Game = function(config){
+    Game = function(config, canvas, playersNum){
         
         var self = this;
         
-        this.status = PAUSED;
+        this.status = null;
         
         this.gameOverCallback = null;
         
@@ -52,50 +52,55 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             minLifeTime : 5,
         }
         
+        this.ctx = canvas.getContext('2d');
         
-        
-        this.world =  null;        
+        this.world = null;    
         this.players = null;
         this.walls = null;
         this.dominationArea = null;
         this.countDown = null;
         this.playersScore = null;
-        this.canvas = null;
-        this.ctx = null;   
-        this.backgroundAudio = this.config.gameOptions.backgroundAudio;
 
-        this.init = function(canvas, players, gameOverCallback){
-            this.canvas = canvas;
-            this.ctx = canvas.getContext('2d');
-            this.gameOverCallback = gameOverCallback;
-            this.world =  new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true); // doSleep флаг.          
-            
+        this.backgroundAudio = new Sound({url : this.config.gameOptions.backgroundAudio});
+        this.bounceAudio = new Sound({
+            url : this.config.gameOptions.bounceAudio,
+            multiShot : true
+        });
+        this.scoreAudios = [];
+        for(var i =  0; i < playersNum; i++){
+            var scoreAudio = new Sound({
+                url : this.config.gameOptions.scoreAudio
+            })
+            this.scoreAudios.push(scoreAudio);
+        };
+
+        
+        this.init = function(players, gameOverCallback){
+            this.status = PAUSED;
+            this.world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true);    // doSleep флаг.    
             this.walls = new Walls(this.world, this.ctx, this.gameOptions, this.wallsOptions).init();
-
-            this.players = new Players(this.world, this.ctx, this.config, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
-            
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
-            
-            this._setCollisionListener();            
-                        
+            this.players = new Players(this.world, this.ctx, this.scoreAudios, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
+            this.gameOverCallback = gameOverCallback;    
+            this._setCollisionListener();      
             this.intervalId = window.setInterval(this._update, 1000 / 60);
         };
         
         this.startGame = function(){
-            this.backgroundAudio.loop = true;
-            this.backgroundAudio.play();
+            this.backgroundAudio.play({loop : true});
             self.status = IN_PROCESS;
+            this._startPhysic();
         }
         
         this.pauseGame = function(){
             this.status = PAUSED;
             this._stopPhysic();  
-            this.backgroundAudio.pause();
+            Sound.pause();
         }
         
         this.resumeGame = function(){
             this.status = IN_PROCESS;
-            this.backgroundAudio.play();
+            Sound.resume();
             this._startPhysic();
         }        
         
@@ -103,7 +108,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
             this.status = FINISHED;
             this._stopPhysic();
         }
-        
+                
         this.getStatus = function(){
             return this.status;
         }
@@ -147,7 +152,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
                     //todo нормировать относительно максимального импульса исходя их конфигов массы и макисмального ускорения?
                     var player = objectA.type == 'Player' ? objectA : objectB;
                     var volume = impulse.normalImpulses[0] <= 50 ? impulse.normalImpulses[0] / 50 : 1;
-                    player.playBounce(volume);
+                    self.bounceAudio.play({volume : volume});
                     console.log(impulse.normalImpulses[0]);
                     
                 } 
@@ -184,7 +189,7 @@ define(['box2d', 'walls', 'players', 'dominationArea'], function(box, Walls, Pla
                 
         this._calculateScore = function(){
             var self = this;
-            this.players.all().forEach(function(player){
+            this.players.all().forEach(function(player, index){
                 var playerPosition = player.body.GetPosition();
                 if(self.dominationArea.isInArea(self._toPixels(playerPosition.x), self._toPixels(playerPosition.y))){
                     player.setIsFlashing(true);

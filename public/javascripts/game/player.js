@@ -3,14 +3,13 @@ define(['box2d'], function() {
     var LIGHTER = 1;
     var DARKER = 2;
         
-    var Player = function(world, ctx, config, gameOptions, scoreArea, options){
+    var Player = function(world, ctx, scoreAudio, gameOptions, scoreArea, options){
                         
         this.type = 'Player';
         this.world = world;
         this.ctx = ctx;
         this.options = options; 
         this.gameOptions = gameOptions;
-        this.config = config;
         this.body = null;   
         
         this.name = options.name;
@@ -23,8 +22,7 @@ define(['box2d'], function() {
         this.score = 0;
         this.lastFire = 0;
         this.scoreArea = scoreArea;
-        this.scoreAudio = null;
-        this.bounceAudios = [];
+        this.scoreAudio = scoreAudio;
         
         this.init = function(){
             var fixDef = new Box2D.Dynamics.b2FixtureDef();
@@ -41,13 +39,7 @@ define(['box2d'], function() {
             this.body = this.world.CreateBody(bodyDef);    
             this.body.CreateFixture(fixDef);  
             this.body.SetUserData(this);
-            this.scoreAudio = this.config.gameOptions.scoreAudio.cloneNode(true);
-            
-            //load audio 5 times to simulate a number bounces per time
-            for(var i = 0; i < 5; i++){
-                this.bounceAudios.push(this.config.gameOptions.bounceAudio.cloneNode(true));    
-            };
-//             this.bounceAudios.push(new Audio('/dominator/sounds/bounce_1.wav'));            
+                     
             return this;
         }    
 
@@ -74,11 +66,10 @@ define(['box2d'], function() {
         
         this.setIsFlashing = function(value){
             if(value == true && this.isFlashing != value){
-                this.scoreAudio.loop = true;
-                this.scoreAudio.play();                
+                this.scoreAudio.play({loop : true});                
             }
-            else if(value == false && this.isFlashing != value){
-                this.scoreAudio.loop = false;
+            else if(value == false){
+                this.scoreAudio.setOptions({loop : false});      
             }
             this.isFlashing = value;
         }
@@ -119,18 +110,7 @@ define(['box2d'], function() {
                 return this.options.color;
             }
         }
-        
-        this.playBounce = function(volume){
-            for(var i = 0; i  < this.bounceAudios.length; i++){
-                var audio = this.bounceAudios[i];
-                if(audio.paused){
-                    audio.volume = volume;
-                    audio.play();
-                    break;
-                }
-            }
-        }
-        
+                
         
         this.toMetr = function(pixels){
             return pixels / this.gameOptions.pixelsInMetr;
