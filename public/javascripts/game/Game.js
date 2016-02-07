@@ -51,10 +51,12 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
         }
         
         this.dominationAreaOptions = {
+            indent : 60,
             r : this.gameOptions.pixelsInMetr * 2,
             color : '#263238',
             maxLifeTime : 30,
             minLifeTime : 5,
+            imageSrc : "/dominator/imgs/radial.png"
         }
         
         this.ctx = canvas.getContext('2d');
@@ -83,11 +85,11 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
         this.init = function(players, gameOverCallback){
             this.status = PAUSED;
             this.world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true);    // doSleep флаг.               
-            this.walls = new Walls(this.world, this.ctx, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();
-            
-            this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
+            this.walls = new Walls(this.world, this.ctx, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();            
+            this.dominationArea = new DominationArea(this.ctx, this.gameOptions.width, this.gameOptions.height, this.dominationAreaOptions);
             
             this.players = new Players(this.world, this.ctx, this.scoreAudios, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
+            
             this.gameOverCallback = gameOverCallback;    
             this._setCollisionListener();      
             this.intervalId = window.setInterval(this._update, 1000 / 60);
