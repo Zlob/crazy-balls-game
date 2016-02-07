@@ -1,6 +1,6 @@
 define(['box2d'], function() {
     
-    var scoreArea = function(world, ctx, options){
+    var ScoreArea = function(world, ctx, options){
         
         this.world = world;
         this.ctx = ctx;
@@ -24,5 +24,5 @@ define(['box2d'], function() {
         
     }
     
-    return scoreArea;
+    return ScoreArea;
 });

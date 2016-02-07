@@ -1,5 +1,5 @@
-define(['player', 'scoreArea'], function(Player, ScoreArea) {
-    var players = function(world, ctx, scoreAudios, gameOptions, options, scoreOptions ){
+define(['Player', 'ScoreArea'], function(Player, ScoreArea) {
+    var Players = function(world, ctx, scoreAudios, gameOptions, options, scoreOptions ){
         
         this.world = world;
         this.ctx =  ctx;
@@ -185,5 +185,5 @@ define(['player', 'scoreArea'], function(Player, ScoreArea) {
         }        
         
     }
-    return players;
+    return Players;
 });

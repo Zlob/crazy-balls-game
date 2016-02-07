@@ -7,6 +7,13 @@ define(function() {
     DominationArea = function(ctx, gameOptions, wallOptioms, options){
         this.ctx = ctx;
         
+//         this.x
+//         this.y
+//         this.currentRadius
+//         this.maxRadius
+//         this.indent
+        
+        
         this.position = {
             x : null,
             y : null
@@ -66,8 +73,10 @@ define(function() {
         
         
         this.checkAndToggle = function(){
-            if(this.status == DP_NORMAL && this.lifeTime < 0){
-                this.status = DP_HIDING;
+            if(this.status == DP_NORMAL){
+                if(this.lifeTime < 0){
+                    this.status = DP_HIDING;    
+                }                
             }
             if(this.status == DP_HIDING){
                 if(this.options.r > 1){

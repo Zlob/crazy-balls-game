@@ -1,4 +1,4 @@
-define(['box2d', 'Sound', 'walls', 'players', 'dominationArea'], function(box, Sound, Walls, Players, DominationArea){
+define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, Sound, Walls, Players, DominationArea){
 
     
     var PAUSED = 0;
@@ -8,7 +8,7 @@ define(['box2d', 'Sound', 'walls', 'players', 'dominationArea'], function(box, S
     var FPS_PAUSED = 0;
     var FPS_IN_PROCESS  = 1/60;
     
-    Game = function(config, canvas, playersNum){
+    Game = function(canvas, playersNum){
         
         var self = this;
         
@@ -18,18 +18,23 @@ define(['box2d', 'Sound', 'walls', 'players', 'dominationArea'], function(box, S
         
         this.interval = 1/60;
         
-        this.config = config;
         
         this.gameOptions = {
             width : 1920,
             height : 1080,
             pixelsInMetr : 30,
-            backgroundColor : '#CFD8DC'
+            backgroundColor : '#CFD8DC',
+            backgroundAudio : '/dominator/sounds/music_1.ogg',
+            scoreAudio      : '/dominator/sounds/coin_2.wav',
+            bounceAudio     : '/dominator/sounds/bounce_1.wav'
         };
-        
+                
         this.wallsOptions = {
             size  : this.gameOptions.pixelsInMetr*1.5,
-            color : '#263238'
+            color : '#263238',
+            density : 1.0,
+            friction : 0.5,
+            restitution : 0.2
         }
         
         this.playersOptions = {
@@ -61,15 +66,15 @@ define(['box2d', 'Sound', 'walls', 'players', 'dominationArea'], function(box, S
         this.countDown = null;
         this.playersScore = null;
 
-        this.backgroundAudio = new Sound({url : this.config.gameOptions.backgroundAudio});
+        this.backgroundAudio = new Sound({url : this.gameOptions.backgroundAudio});
         this.bounceAudio = new Sound({
-            url : this.config.gameOptions.bounceAudio,
+            url : this.gameOptions.bounceAudio,
             multiShot : true
         });
         this.scoreAudios = [];
         for(var i =  0; i < playersNum; i++){
             var scoreAudio = new Sound({
-                url : this.config.gameOptions.scoreAudio
+                url : this.gameOptions.scoreAudio
             })
             this.scoreAudios.push(scoreAudio);
         };
@@ -77,9 +82,11 @@ define(['box2d', 'Sound', 'walls', 'players', 'dominationArea'], function(box, S
         
         this.init = function(players, gameOverCallback){
             this.status = PAUSED;
-            this.world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true);    // doSleep флаг.    
-            this.walls = new Walls(this.world, this.ctx, this.gameOptions, this.wallsOptions).init();
+            this.world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true);    // doSleep флаг.               
+            this.walls = new Walls(this.world, this.ctx, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();
+            
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions, this.wallsOptions, this.dominationAreaOptions).init();
+            
             this.players = new Players(this.world, this.ctx, this.scoreAudios, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
             this.gameOverCallback = gameOverCallback;    
             this._setCollisionListener();      

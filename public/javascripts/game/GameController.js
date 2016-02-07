@@ -1,7 +1,6 @@
 define(['io', 'swal', 'QRCode'], function (io, swal) {
-    var gameController = function(playersNum, Game, config){
+    var GameController = function(playersNum, Game){
         this.playersNum = playersNum;
-        this.config = config;
         this.gameId = null;
         this.game = null;
         this.canvas = null;
@@ -32,7 +31,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
 
             this.canvas = this._getCanvas();
             
-            this.game = new Game(this.config, this.canvas, this.playersNum);
+            this.game = new Game(this.canvas, this.playersNum);
 
         }       
 
@@ -182,5 +181,5 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         }
     }
 
-    return gameController;
+    return GameController;
 });
