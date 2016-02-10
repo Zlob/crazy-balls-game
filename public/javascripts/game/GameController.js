@@ -5,6 +5,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
         this.game = null;
         this.canvas = null;
         this.players = [];  
+        this.countDownIntervalId = null;
         var self = this;
 
         this.init = function(){
@@ -75,7 +76,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             this.startGame();
         }
         
-        this.addMenuEventListener = function(){
+        this.addMenuEventListener = function(){           
             $('body').keypress(function(event){
                 if(self.game.getStatus() === 1){
                     self.showMenu();
@@ -83,6 +84,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 }
                 else if(self.game.getStatus() === 0){
                     swal.close();
+                    window.clearInterval(self.countDownIntervalId);
                     self.game.resumeGame();
                 }
             });
@@ -143,8 +145,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 html: true,
                 customClass: 'count-down'
             });
-
-            var intervalId = window.setInterval(function(){
+            this.countDownIntervalId = window.setInterval(function(){
                 var countDownModal = $('.count-down');
                 var countDownModalCounter = $('.counter-field').first();
                 var counter = parseInt(countDownModalCounter.html());
@@ -152,7 +153,7 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
                 countDownModalCounter.html(counter);
                 if(counter == 0){
                     swal.close();
-                    window.clearInterval(intervalId);
+                    window.clearInterval(self.countDownIntervalId);
                     self.game.startGame();
                 }
             }, 1000);

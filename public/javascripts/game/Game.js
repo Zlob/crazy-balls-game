@@ -121,6 +121,7 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
         this.endGame = function(){
             this.status = FINISHED;
             this._stopPhysic();
+            window.clearInterval(this.intervalId);
         }
                 
         this.getStatus = function(){
