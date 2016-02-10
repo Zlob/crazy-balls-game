@@ -51,7 +51,7 @@ define(function() {
             }                
         }
         if(this.status == DP_SHOWING){
-            if(this.currentRadius < this.maxR){
+            if(this.currentRadius < this.maxRadius){
                 this.currentRadius +=1;
             }
             else{
@@ -91,10 +91,10 @@ define(function() {
     }
 
     DominationArea.prototype._moveRandom = function(){
-        var xMax = this.width - this.indent - this.maxR;
-        var xMin = this.maxR + this.indent;
-        var yMax = this.height - this.indent - this.maxR;
-        var yMin = this.maxR + this.indent;
+        var xMax = this.width - this.indent - this.maxRadius;
+        var xMin = this.maxRadius + this.indent;
+        var yMax = this.height - this.indent - this.maxRadius;
+        var yMin = this.maxRadius + this.indent;
         var x = this._getRandom(xMin, xMax);
         var y = this._getRandom(yMin, yMax);
         this._move(x,y);

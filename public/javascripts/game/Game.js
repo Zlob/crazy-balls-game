@@ -1,4 +1,4 @@
-define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, Sound, Walls, Players, DominationArea){
+define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactory'], function(box, Sound, Walls, Players, DominationArea, ScoreAreaFactory){
 
     
     var PAUSED = 0;
@@ -22,7 +22,7 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
         this.gameOptions = {
             width : 1920,
             height : 1080,
-            pixelsInMetr : 30,
+            pixelsInMetr : 30, //todo убрать
             backgroundColor : '#CFD8DC',
             backgroundAudio : '/dominator/sounds/music_1.ogg',
             scoreAudio      : '/dominator/sounds/coin_2.wav',
@@ -39,6 +39,10 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
         
         this.playersOptions = {
             r     :  this.gameOptions.pixelsInMetr,
+            density : 1,
+            friction : 0.5,
+            restitution : 0.5,
+            linearDamping : 0.5,
             color : ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B', '#9C27B0', '#FF9800'],
             borderColor : ['#B71C1C', '#0D47A1', '#1B5E20', '#F57F17', '#4A148C', '#E65100'],
             flashColor : ['#FFCDD2', '#BBDEFB', '#C8E6C9', '#FFF9C4', '#E1BEE7', '#FFE0B2']
@@ -46,8 +50,8 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
         
         this.scoreOptions = {
             font : "24px 'Press Start 2P'",
-            wallSize : this.wallsOptions.size,
-            color: ['white', 'white', 'white', 'white', 'white', 'white']            
+            indent : this.wallsOptions.size,
+            color: 'white'            
         }
         
         this.dominationAreaOptions = {
@@ -88,7 +92,8 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
             this.walls = new Walls(this.world, this.ctx, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();            
             this.dominationArea = new DominationArea(this.ctx, this.gameOptions.width, this.gameOptions.height, this.dominationAreaOptions);
             
-            this.players = new Players(this.world, this.ctx, this.scoreAudios, this.gameOptions, this.playersOptions, this.scoreOptions).init(players);
+            var scoreAreaFactory = new ScoreAreaFactory(this.ctx, this.gameOptions.width, this.gameOptions.height, this.scoreOptions);
+            this.players = new Players(this.world, this.ctx, scoreAreaFactory, this.gameOptions.width, this.gameOptions.height, this.playersOptions, this.scoreAudios).init(players);
             
             this.gameOverCallback = gameOverCallback;    
             this._setCollisionListener();      
@@ -230,7 +235,8 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea'], function(box, S
         
         this._checkGameOver = function(){
             var gameIsOver = this.players.all().some(function(player){
-                return player.getScore() >= 10000;
+                var score = player.getScore();
+                return score >= 1000;
             });
             if(gameIsOver){
                 this.endGame();

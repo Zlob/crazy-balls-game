@@ -23,10 +23,10 @@ define(['Helper', 'box2d'], function(Helper) {
         fixDef.shape = this._getShape();
         var bodyDef = this._getBodydef();
 
-        this.body = this.world.CreateBody(bodyDef);
-        this.body.CreateFixture(fixDef);
-        this.body.SetUserData(this);
-        return this;
+        var body = this.world.CreateBody(bodyDef);
+        body.CreateFixture(fixDef);
+        body.SetUserData(this);
+        return body;
     }
     
     Wall.prototype._getFixDef = function(){

@@ -3,7 +3,11 @@ define(function() {
     var Helper = {
         toMetr : function(pixels){
             return pixels / PIXELS_IN_METR;
-        }        
+        },
+        
+        toPixels : function(metrs){
+            return metrs * PIXELS_IN_METR;
+        }
     }
     return Helper;
 });
