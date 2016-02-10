@@ -22,6 +22,7 @@ define(['Helper','box2d'], function(Helper) {
         this.color = options.color;
         this.flashColor = options.flashColor;
         this.borderColor = options.borderColor;
+        this.currentColor = options.color;
         
         this.name = options.name;
         this.id = options.id;
@@ -62,12 +63,32 @@ define(['Helper','box2d'], function(Helper) {
 
     Player.prototype.setIsFlashing = function(value){
         if(value == true && this.isFlashing != value){
-            this.scoreAudio.play({loop : true});                
+            this.scoreAudio.play({loop : true});    
+            this.currentColor = this.getColor();
         }
         else if(value == false){
             this.scoreAudio.setOptions({loop : false});      
+            this.currentColor = this.color;
         }
         this.isFlashing = value;
+    }
+    
+    
+    Player.prototype.getColor = function(){
+        if(this.flashingStage == LIGHTER){
+            this.flashingCount++;
+            if(this.flashingCount >= this.maxFlashingCount){
+                this.flashingStage = DARKER;
+            }
+            return this.flashColor;
+        }
+        else{
+            this.flashingCount--;
+            if(this.flashingCount <= 0){
+                this.flashingStage = LIGHTER;
+            }
+            return this.color;
+        }
     }
 
     Player.prototype.render = function(){
@@ -75,7 +96,7 @@ define(['Helper','box2d'], function(Helper) {
         var position = this.body.GetPosition();
         var x = this.toPixels(position.x);
         var y = this.toPixels(position.y);
-        this.ctx.fillStyle = this.getColor();
+        this.ctx.fillStyle = this.currentColor;
         this.ctx.beginPath();
         this.ctx.arc(x, y, this.r, 0, Math.PI * 2);
         this.ctx.fill();
@@ -85,27 +106,7 @@ define(['Helper','box2d'], function(Helper) {
         this.scoreArea.render(this.getScore());
     }
 
-    Player.prototype.getColor = function(){
-        if(this.isFlashing){
-            if(this.flashingStage == LIGHTER){
-                this.flashingCount++;
-                if(this.flashingCount >= this.maxFlashingCount){
-                    this.flashingStage = DARKER;
-                }
-                return this.flashColor;
-            }
-            else{
-                this.flashingCount--;
-                if(this.flashingCount <= 0){
-                    this.flashingStage = LIGHTER;
-                }
-                return this.color;
-            }
-        }
-        else{
-            return this.color;
-        }
-    }
+
         
     Player.prototype._getBody = function(){
         var fixDef = this._getFixDef(); 
