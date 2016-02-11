@@ -1,4 +1,4 @@
-define(['Helper','box2d'], function(Helper) {
+define(['../Helper','box2d'], function(Helper) {
     
     var LIGHTER = 1;
     var DARKER = 2;

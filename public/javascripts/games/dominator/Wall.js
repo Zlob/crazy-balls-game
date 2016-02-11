@@ -1,4 +1,4 @@
-define(['Helper', 'box2d'], function(Helper) {
+define(['../Helper', 'box2d'], function(Helper) {
         
     var Wall = function(world, ctx, options){
         this.type = 'Wall';
