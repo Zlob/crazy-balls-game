@@ -96,8 +96,12 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
             this.players = new Players(this.world, this.ctx, scoreAreaFactory, this.gameOptions.width, this.gameOptions.height, this.playersOptions, this.scoreAudios).init(players);
             
             this.gameOverCallback = gameOverCallback;    
-            this._setCollisionListener();      
+            this._setCollisionListener();  
+            if(this.intervalId){
+                    window.clearInterval(this.intervalId);
+            }
             this.intervalId = window.setInterval(this._update, 1000 / 60);
+            
         };
         
         this.startGame = function(){
