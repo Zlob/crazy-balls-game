@@ -36,6 +36,7 @@ define([
         
         this.interval = 1/60;
         
+        this.maxScore = 1000;      
         
         this.gameOptions = {
             width : 1920,
@@ -217,10 +218,9 @@ define([
         
         
         this._update = function() {
-            self.world.Step(self.interval, 10, 10);
-            
-            if(self.status == IN_PROCESS){
-                self._calculateScore();            
+            self.world.Step(self.interval, 20, 10);            
+            self._calculateScore();    
+            if(self.status == IN_PROCESS){     
                 self._checkGameOver();
                 self.dominationArea.checkAndToggle();
             }
@@ -235,7 +235,7 @@ define([
             var self = this;
             this.players.all().forEach(function(player, index){
                 var playerPosition = player.body.GetPosition();
-                if(self.dominationArea.isInArea(self._toPixels(playerPosition.x), self._toPixels(playerPosition.y))){
+                if(self.status == IN_PROCESS && self.dominationArea.isInArea(self._toPixels(playerPosition.x), self._toPixels(playerPosition.y))){
                     player.setIsFlashing(true);
                     player.addScore(1);
                 }
@@ -264,7 +264,7 @@ define([
         this._checkGameOver = function(){
             var gameIsOver = this.players.all().some(function(player){
                 var score = player.getScore();
-                return score >= 1000;
+                return score >= self.maxScore;
             });
             if(gameIsOver){
                 this.endGame();

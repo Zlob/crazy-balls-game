@@ -65,12 +65,11 @@ define(['../Helper','box2d'], function(Helper) {
     }
 
     Player.prototype.setIsFlashing = function(value){
-        if(value == true && this.isFlashing != value){
-            this.scoreAudio.play({loop : true});    
+        if(value == true){
+            this.scoreAudio.play();    
             this.currentColor = this.getColor();
         }
-        else if(value == false){
-            this.scoreAudio.setOptions({loop : false});      
+        else if(value == false){  
             this.currentColor = this.color;
         }
         this.isFlashing = value;
@@ -99,7 +98,7 @@ define(['../Helper','box2d'], function(Helper) {
         this.circle.position.x = this.toPixels(position.x);
         this.circle.position.y = this.toPixels(position.y);
         this.scoreArea.render(this.getScore());
-        //         this.ctx.fillStyle = this.currentColor;
+        this.circle.fillColor = this.currentColor;
     }
         
     Player.prototype._getBody = function(){
