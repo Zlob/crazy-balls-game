@@ -1,9 +1,9 @@
 define(['../Helper', 'box2d'], function(Helper) {
         
-    var Wall = function(world, ctx, options){
+    var Wall = function(world, paper, options){
         this.type = 'Wall';
         this.world = world;
-        this.ctx = ctx;
+        this.paper = paper;
         
         this.x = options.x;
         this.y = options.y;
@@ -15,6 +15,12 @@ define(['../Helper', 'box2d'], function(Helper) {
         this.restitution = options.restitution;
         
         this.body = this._getBody();
+        this.rect = new this.paper.Path.Rectangle({
+            point: [this.x, this.y],
+            size: [this.width, this.height],
+            strokeColor: this.color,
+        });
+        this.rect.fillColor = this.color;
             
     }
     
@@ -51,14 +57,8 @@ define(['../Helper', 'box2d'], function(Helper) {
         bodyDef.position.Set(this.toMetr(this.x + this.width/2), this.toMetr(this.y + this.height/2));
         
         return bodyDef;
-    }
-    
-    Wall.prototype.render = function(){
-        this.ctx.save();
-        this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
-        this.ctx.restore();
-    }
+    }    
+
 
     for(var property in Helper){
        Wall.prototype[property] = Helper[property]; 

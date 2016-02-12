@@ -1,7 +1,7 @@
 define(['Wall'],function(Wall) {
-    var Walls = function(world, ctx, width, height, options){
+    var Walls = function(world, paper, width, height, options){
         this.world = world;
-        this.ctx = ctx;
+        this.paper = paper;
         
         this.width = width;
         this.height = height;
@@ -49,19 +49,13 @@ define(['Wall'],function(Wall) {
                 
         this.init = function(){
             this.collection = {
-                'left'   : new Wall(this.world, this.ctx, this.getWallPosition('left')),
-                'top'    : new Wall(this.world, this.ctx, this.getWallPosition('top')),
-                'right'  : new Wall(this.world, this.ctx, this.getWallPosition('right')),
-                'bottom' : new Wall(this.world, this.ctx, this.getWallPosition('bottom'))
+                'left'   : new Wall(this.world, this.paper, this.getWallPosition('left')),
+                'top'    : new Wall(this.world, this.paper, this.getWallPosition('top')),
+                'right'  : new Wall(this.world, this.paper, this.getWallPosition('right')),
+                'bottom' : new Wall(this.world, this.paper, this.getWallPosition('bottom'))
             }   
             return this;
         }       
-        
-        this.render = function(){
-            for(var wallName in this.collection){
-                this.collection[wallName].render();
-            }          
-        }
         
     }
     return Walls;

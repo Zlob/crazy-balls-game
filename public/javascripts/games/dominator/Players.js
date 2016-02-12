@@ -1,8 +1,8 @@
 define(['Player'], function(Player) {
-    var Players = function(world, ctx, scoreAreaFactory, width, height, playerOptions, scoreAudios){
+    var Players = function(world, paper, scoreAreaFactory, width, height, playerOptions, scoreAudios){
         
         this.world = world;
-        this.ctx =  ctx;
+        this.paper =  paper;
         
         this.scoreAreaFactory = scoreAreaFactory;
         this.scoreAudios = scoreAudios;
@@ -86,7 +86,7 @@ define(['Player'], function(Player) {
                 var playerOptions = self.getPlayerOptions(index);
                 playerOptions.name = player.playerName;
                 playerOptions.id = player.playerId;
-                self.collection.push( new Player( self.world, self.ctx, scoreArea, self.scoreAudios[index], playerOptions ))
+                self.collection.push( new Player( self.world, self.paper, scoreArea, self.scoreAudios[index], playerOptions ))
             });
             return this;
         };     

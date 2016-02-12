@@ -1,17 +1,18 @@
 define(['ScoreArea'],function(ScoreArea) {
-    var ScoreAreaFactory = function(ctx, width, height, scoreOptions){
-        this.ctx = ctx;
+    var ScoreAreaFactory = function(paper, width, height, scoreOptions){
+        this.paper = paper;
         
         this.width = width;
         this.height = height;
         
         this.font = scoreOptions.font;
+        this.fontSize = scoreOptions.fontSize;
         this.indent = scoreOptions.indent;
         this.color = scoreOptions.color;         
     }
 
     ScoreAreaFactory.prototype.createScoreArea = function(id){
-        return new ScoreArea(this.ctx, this.getScoreAreaOptions(id));
+        return new ScoreArea(this.paper, this.getScoreAreaOptions(id));
     }
     
     ScoreAreaFactory.prototype.getLeft = function(){
@@ -27,11 +28,11 @@ define(['ScoreArea'],function(ScoreArea) {
     }
 
     ScoreAreaFactory.prototype.getTop = function(){
-        return this.indent/2;
+        return this.indent/2 + this.fontSize/2;
     }
 
     ScoreAreaFactory.prototype.getBottom = function(){
-        return this.height - this.indent/2; 
+        return this.height - this.indent/2 + this.fontSize/2; 
     }
 
 
@@ -40,36 +41,36 @@ define(['ScoreArea'],function(ScoreArea) {
         if(number == '0'){
             result.x      = this.getLeft();
             result.y      = this.getTop();
-            result.textAlign = 'start';
+            result.justification = 'left';
         }
         if(number == '1'){
             result.x      = this.getRight();
             result.y      = this.getTop();
-            result.textAlign = 'end';
+            result.justification = 'right';
         }
         if(number == '2'){
             result.x      = this.getLeft();
             result.y      = this.getBottom();
-            result.textAlign = 'start';
+            result.justification = 'left';
         }
         if(number == '3'){
             result.x      = this.getRight();
             result.y      = this.getBottom();
-            result.textAlign = 'end';
+            result.justification = 'right';
         }
         if(number == '4'){
             result.x      = this.getMiddle();
             result.y      = this.getTop();
-            result.textAlign = 'center';
+            result.justification = 'center';
         }
         if(number == '5'){
             result.x      = this.getMiddle();
             result.y      = this.getBottom();
-            result.textAlign = 'center';
+            result.justification = 'center';
         }
-        result.textBaseline = 'middle';
         result.color = this.color;
         result.font = this.font;
+        result.fontSize = this.fontSize;
         return result;
     }
 

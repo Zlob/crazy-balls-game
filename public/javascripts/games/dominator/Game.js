@@ -1,4 +1,22 @@
-define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactory'], function(box, Sound, Walls, Players, DominationArea, ScoreAreaFactory){
+define([
+    'box2d',
+    'paper',
+    'Sound',
+    'Walls',
+    'Players',
+    'DominationArea',
+    'ScoreAreaFactory',
+
+], function(box,
+             paper,
+             Sound, 
+             Walls, 
+             Players, 
+             DominationArea, 
+             ScoreAreaFactory
+            )
+{
+
 
     
     var PAUSED = 0;
@@ -49,7 +67,8 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
         }
         
         this.scoreOptions = {
-            font : "24px 'Press Start 2P'",
+            font : "'Press Start 2P'",
+            fontSize : "24",
             indent : this.wallsOptions.size,
             color: 'white'            
         }
@@ -63,7 +82,9 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
             imageSrc : "/dominator/imgs/radial.png"
         }
         
-        this.ctx = canvas.getContext('2d');
+        this.ctx = canvas.getContext('2d'); //todo
+        this.canvas = canvas; //todo
+        this.paper = paper;
         
         this.world = null;    
         this.players = null;
@@ -87,21 +108,25 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
 
         
         this.init = function(players, gameOverCallback){
+            this.paper.setup(this.canvas);
+            
             this.status = PAUSED;
             this.world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true);    // doSleep флаг.               
-            this.walls = new Walls(this.world, this.ctx, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();            
-            this.dominationArea = new DominationArea(this.ctx, this.gameOptions.width, this.gameOptions.height, this.dominationAreaOptions);
+            this.walls = new Walls(this.world, this.paper, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();            
+            this.dominationArea = new DominationArea(this.paper, this.gameOptions.width, this.gameOptions.height, this.dominationAreaOptions);
             
-            var scoreAreaFactory = new ScoreAreaFactory(this.ctx, this.gameOptions.width, this.gameOptions.height, this.scoreOptions);
-            this.players = new Players(this.world, this.ctx, scoreAreaFactory, this.gameOptions.width, this.gameOptions.height, this.playersOptions, this.scoreAudios).init(players);
+            var scoreAreaFactory = new ScoreAreaFactory(this.paper, this.gameOptions.width, this.gameOptions.height, this.scoreOptions);
+            this.players = new Players(this.world, this.paper, scoreAreaFactory, this.gameOptions.width, this.gameOptions.height, this.playersOptions, this.scoreAudios).init(players);
             
             this.gameOverCallback = gameOverCallback;    
             this._setCollisionListener();  
             if(this.intervalId){
-                    window.clearInterval(this.intervalId);
+                window.clearInterval(this.intervalId);
             }
-            this.intervalId = window.setInterval(this._update, 1000 / 60);
             
+            this._showBackGround();
+            
+            this.intervalId = window.setInterval(this._update, 1000 / 60);
         };
         
         this.startGame = function(){
@@ -220,12 +245,10 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
             });
         }
         
-        this._render = function(){  
-            this._clearCtx();          
-            this._showBackGround();
-            this.walls.render();
+        this._render = function(){        
             this.dominationArea.render();  
-            this.players.render();      
+            this.players.render();  
+            this.paper.view.draw();
         }
         
 
@@ -250,8 +273,13 @@ define(['box2d', 'Sound', 'Walls', 'Players', 'DominationArea', 'ScoreAreaFactor
         }
         
         this._showBackGround = function(){
-            this.ctx.fillStyle = this.gameOptions.backgroundColor;
-            this.ctx.fillRect(0, 0, this.gameOptions.width, this.gameOptions.height);
+            var rect = new this.paper.Path.Rectangle({
+                point: [0, 0],
+                size: [this.gameOptions.width, this.gameOptions.height],
+                strokeColor: this.gameOptions.backgroundColor,
+            });
+            rect.sendToBack();
+            rect.fillColor = this.gameOptions.backgroundColor;
         }
     };
         

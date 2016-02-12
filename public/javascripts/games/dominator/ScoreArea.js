@@ -1,28 +1,31 @@
 define(['box2d'], function() {
     
-    var ScoreArea = function(ctx, options){
+    var ScoreArea = function(paper, options){
         
-        this.ctx = ctx;
+        this.paper = paper;
         
         this.x = options.x;
         this.y = options.y;
         
         this.font = options.font;
+        this.fontSize = options.fontSize;
         this.textAlign = options.textAlign;
         this.textBaseline = options.textBaseline;
         this.color = options.color;
+        this.justification = options.justification;
         
+        this.text = new this.paper.PointText({
+            point: [this.x, this.y],
+            content: '0',
+            font: this.font,
+            fontSize: this.fontSize,
+            fillColor: this.color,
+            justification: this.justification
+        });
     }
     
     ScoreArea.prototype.render = function(score){
-        this.ctx.save();
-        this.ctx.fillStyle = this.color;
-        this.ctx.font = this.font;
-        this.ctx.textAlign = this.textAlign;
-        this.ctx.textBaseline = this.textBaseline;
-        this.ctx.fillText(score, this.x, this.y);
-        this.ctx.restore();
-
+        this.text.content = score;
     }
     
     return ScoreArea;

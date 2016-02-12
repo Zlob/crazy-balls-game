@@ -4,8 +4,8 @@ define(function() {
     var DP_HIDING = 2;
     var DP_SHOWING = 3;    
     
-    DominationArea = function(ctx, width, height, options){
-        this.ctx = ctx;
+    DominationArea = function(paper, width, height, options){
+        this.paper = paper;
         
         this.width = width;
         this.height = height;
@@ -27,7 +27,10 @@ define(function() {
         this.backgroundImage.src = options.imageSrc;
         this.backgroundAngle = 0;         
 
-        this.status = DP_NORMAL;        
+        this.status = DP_NORMAL;    
+        
+        this.circle = new this.paper.Path.Circle(new this.paper.Point(this.x, this.y), this.currentRadius);
+        this.circle.fillColor = this.color;
         
     }
 
@@ -62,24 +65,31 @@ define(function() {
         this.lifeTime--;
         this.backgroundAngle +=0.005;
     }
-
+    
     DominationArea.prototype.render = function(){ 
-        this.ctx.save();
-        this.ctx.fillStyle = this.color;
-        this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
-        this.ctx.clip();
-        this.ctx.stroke();
-        this.ctx.closePath();
-        this.ctx.translate(this.x, this.y);
-        this.ctx.rotate(this.backgroundAngle);
-        this.ctx.drawImage(this.backgroundImage ,- this.maxRadius, -this.maxRadius, this.maxRadius*2, this.maxRadius*2 );
-        this.ctx.rotate(-this.backgroundAngle);
-        this.ctx.translate(-this.x, -this.y);         
-        this.ctx.globalAlpha = 0.2;
-        this.ctx.fill();
-        this.ctx.restore();
+        this.circle.bounds.width = this.currentRadius*2;
+        this.circle.bounds.height = this.currentRadius*2;
+        this.circle.position.x = this.x;
+        this.circle.position.y = this.y;
     }
+
+//     DominationArea.prototype.render = function(){ 
+//         this.ctx.save();
+//         this.ctx.fillStyle = this.color;
+//         this.ctx.beginPath();
+//         this.ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
+//         this.ctx.clip();
+//         this.ctx.stroke();
+//         this.ctx.closePath();
+//         this.ctx.translate(this.x, this.y);
+//         this.ctx.rotate(this.backgroundAngle);
+//         this.ctx.drawImage(this.backgroundImage ,- this.maxRadius, -this.maxRadius, this.maxRadius*2, this.maxRadius*2 );
+//         this.ctx.rotate(-this.backgroundAngle);
+//         this.ctx.translate(-this.x, -this.y);         
+//         this.ctx.globalAlpha = 0.2;
+//         this.ctx.fill();
+//         this.ctx.restore();
+//     }
     
     DominationArea.prototype._move = function(x, y){
         this.x = x;

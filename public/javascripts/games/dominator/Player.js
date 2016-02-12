@@ -3,12 +3,12 @@ define(['../Helper','box2d'], function(Helper) {
     var LIGHTER = 1;
     var DARKER = 2;
         
-    var Player = function(world, ctx, scoreArea, scoreAudio, options){
+    var Player = function(world, paper, scoreArea, scoreAudio, options){
                         
         this.type = 'Player';
         
         this.world = world;
-        this.ctx = ctx;
+        this.paper = paper;
         
         this.r = options.r;
         this.x = options.x;
@@ -37,8 +37,11 @@ define(['../Helper','box2d'], function(Helper) {
         this.score = 0;
         this.lastFire = 0;
         this.scoreArea = scoreArea;
-        this.scoreAudio = scoreAudio;        
-                
+        this.scoreAudio = scoreAudio;   
+        
+        this.circle = new this.paper.Path.Circle(new this.paper.Point(this.x, this.y), this.r);
+        this.circle.strokeColor = this.borderColor;
+        this.circle.fillColor = this.color;                
     }
     
     Player.prototype.move = function(x, y){
@@ -90,23 +93,14 @@ define(['../Helper','box2d'], function(Helper) {
             return this.color;
         }
     }
-
+    
     Player.prototype.render = function(){
-        this.ctx.save();
         var position = this.body.GetPosition();
-        var x = this.toPixels(position.x);
-        var y = this.toPixels(position.y);
-        this.ctx.fillStyle = this.currentColor;
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, this.r, 0, Math.PI * 2);
-        this.ctx.fill();
-        this.ctx.strokeStyle = this.borderColor;
-        this.ctx.stroke();
-        this.ctx.restore();
+        this.circle.position.x = this.toPixels(position.x);
+        this.circle.position.y = this.toPixels(position.y);
         this.scoreArea.render(this.getScore());
+        //         this.ctx.fillStyle = this.currentColor;
     }
-
-
         
     Player.prototype._getBody = function(){
         var fixDef = this._getFixDef(); 
