@@ -42,7 +42,7 @@ define([
             width : 1920,
             height : 1080,
             pixelsInMetr : 30, //todo убрать
-            backgroundColor : '#CFD8DC',
+            backgroundColor : '#000',// '#CFD8DC',
             backgroundAudio : '/dominator/sounds/music_1.ogg',
             scoreAudio      : '/dominator/sounds/coin_2.wav',
             bounceAudio     : '/dominator/sounds/bounce_1.wav'
@@ -218,7 +218,7 @@ define([
         
         
         this._update = function() {
-            self.world.Step(self.interval, 20, 10);            
+            self.world.Step(self.interval, 10, 20);            
             self._calculateScore();    
             if(self.status == IN_PROCESS){     
                 self._checkGameOver();

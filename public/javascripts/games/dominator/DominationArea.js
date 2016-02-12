@@ -14,7 +14,7 @@ define(function() {
 
         this.indent = options.indent;
         
-        this.currentRadius = options.r;
+        this.currentRadius = 1;
         this.maxRadius = options.r;
         
         this.maxLifeTime = options.maxLifeTime;
@@ -27,10 +27,13 @@ define(function() {
         this.backgroundImage.src = options.imageSrc;
         this.backgroundAngle = 0;         
 
-        this.status = DP_NORMAL;    
+        this.status = DP_SHOWING;    
         
         this.circle = new this.paper.Path.Circle(new this.paper.Point(this.x, this.y), this.currentRadius);
-        this.circle.fillColor = this.color;
+        this.circle.strokeColor = '#1E88E5';
+        this.circle.strokeWidth = 5;
+        this.circle.shadowColor = '#64B5F6';
+        this.circle.shadowBlur = 20;
         
     }
 
@@ -73,24 +76,6 @@ define(function() {
         this.circle.position.y = this.y;
     }
 
-//     DominationArea.prototype.render = function(){ 
-//         this.ctx.save();
-//         this.ctx.fillStyle = this.color;
-//         this.ctx.beginPath();
-//         this.ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
-//         this.ctx.clip();
-//         this.ctx.stroke();
-//         this.ctx.closePath();
-//         this.ctx.translate(this.x, this.y);
-//         this.ctx.rotate(this.backgroundAngle);
-//         this.ctx.drawImage(this.backgroundImage ,- this.maxRadius, -this.maxRadius, this.maxRadius*2, this.maxRadius*2 );
-//         this.ctx.rotate(-this.backgroundAngle);
-//         this.ctx.translate(-this.x, -this.y);         
-//         this.ctx.globalAlpha = 0.2;
-//         this.ctx.fill();
-//         this.ctx.restore();
-//     }
-    
     DominationArea.prototype._move = function(x, y){
         this.x = x;
         this.y = y;
