@@ -44,7 +44,7 @@ define(function() {
             };
             
             this.audio.forEach(function(audio){
-                if(audio.currentTime !== 0){
+                if(audio.currentTime !== 0 && audio.currentTime != audio.duration){
                     audio.play();    
                 }
                 

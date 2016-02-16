@@ -15,10 +15,9 @@ define(['io'], function(io) {
 
         this.init = function(){
             var self = this;
+            self.sendAddPlayer();  
+
             if (window.DeviceOrientationEvent) {
-
-                self.sendAddPlayer();           
-
                 document.getElementById("doEvent").innerHTML = "DeviceOrientation";
                 // Listen for the deviceorientation event and handle the raw data
                 window.addEventListener('deviceorientation', function(eventData) {
@@ -42,10 +41,14 @@ define(['io'], function(io) {
             } else {
                 document.getElementById("doEvent").innerHTML = "Not supported."
             }
+
+
             
             window.addEventListener('click', function(){
                 self.playerFire();
             });
+            
+
         }
 
         this.sendAddPlayer = function(){
