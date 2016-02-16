@@ -24,7 +24,7 @@ define([
     var FINISHED =2;
     
     var FPS_PAUSED = 0;
-    var FPS_IN_PROCESS  = 1/60;
+    var FPS_IN_PROCESS  = 1/30;
     
     Game = function(canvas, playersNum){
         
@@ -34,7 +34,7 @@ define([
         
         this.gameOverCallback = null;
         
-        this.interval = 1/60;
+        this.interval = FPS_IN_PROCESS;
         
         this.maxScore = 1000;      
         
@@ -197,9 +197,7 @@ define([
                     //todo нормировать относительно максимального импульса исходя их конфигов массы и макисмального ускорения?
                     var player = objectA.type == 'Player' ? objectA : objectB;
                     var volume = impulse.normalImpulses[0] <= 50 ? impulse.normalImpulses[0] / 50 : 1;
-                    self.bounceAudio.play({volume : volume});
-                    console.log(impulse.normalImpulses[0]);
-                    
+                    self.bounceAudio.play({volume : volume});                    
                 } 
             }
             listener.PreSolve = function(contact, oldManifold) {
@@ -218,7 +216,7 @@ define([
         
         
         this._update = function() {
-            self.world.Step(self.interval, 10, 20);            
+            self.world.Step(self.interval, 8, 3);            
             self._calculateScore();    
             if(self.status == IN_PROCESS){     
                 self._checkGameOver();
