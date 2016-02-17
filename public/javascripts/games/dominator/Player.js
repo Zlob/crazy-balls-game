@@ -45,7 +45,7 @@ define(['../Helper','box2d'], function(Helper) {
     }
     
     Player.prototype.move = function(x, y){
-        this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(x, y), this.body.GetPosition());
+        this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(x*6, y*6), this.body.GetPosition());
     }
 
     Player.prototype.fire = function(){

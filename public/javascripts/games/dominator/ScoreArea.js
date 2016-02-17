@@ -1,4 +1,4 @@
-define(['box2d'], function() {
+define(function() {
     
     var ScoreArea = function(paper, options){
         
@@ -10,7 +10,6 @@ define(['box2d'], function() {
         this.font = options.font;
         this.fontSize = options.fontSize;
         this.textAlign = options.textAlign;
-        this.textBaseline = options.textBaseline;
         this.color = options.color;
         this.justification = options.justification;
         

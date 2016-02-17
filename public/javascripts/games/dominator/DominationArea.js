@@ -21,18 +21,15 @@ define(function() {
         this.minLifeTime = options.minLifeTime;
         this.lifeTime = 600;  
         
-        this.color = options.color;
-        
-        this.backgroundImage = new Image();
-        this.backgroundImage.src = options.imageSrc;
-        this.backgroundAngle = 0;         
+        this.color = options.color;   
+        this.shadowColor = options.shadowColor;   
 
         this.status = DP_SHOWING;    
         
         this.circle = new this.paper.Path.Circle(new this.paper.Point(this.x, this.y), this.currentRadius);
-        this.circle.strokeColor = '#1E88E5';
+        this.circle.strokeColor = this.color;
         this.circle.strokeWidth = 5;
-        this.circle.shadowColor = '#64B5F6';
+        this.circle.shadowColor = this.shadowColor;
         this.circle.shadowBlur = 20;
         
     }
@@ -66,7 +63,6 @@ define(function() {
             }                
         } 
         this.lifeTime--;
-        this.backgroundAngle +=0.005;
     }
     
     DominationArea.prototype.render = function(){ 

@@ -1,5 +1,6 @@
 define([
     'box2d',
+    '../Helper',
     'paper',
     'Sound',
     'Walls',
@@ -8,6 +9,7 @@ define([
     'ScoreAreaFactory',
 
 ], function(box,
+             Helper,
              paper,
              Sound, 
              Walls, 
@@ -41,8 +43,8 @@ define([
         this.gameOptions = {
             width : 1920,
             height : 1080,
-            pixelsInMetr : 30, //todo убрать
-            backgroundColor : '#000',// '#CFD8DC',
+            pixelsInMetr : 30, 
+            backgroundColor : '#000',
             backgroundAudio : '/dominator/sounds/music_1.ogg',
             scoreAudio      : '/dominator/sounds/coin_2.wav',
             bounceAudio     : '/dominator/sounds/bounce_1.wav'
@@ -77,14 +79,13 @@ define([
         this.dominationAreaOptions = {
             indent : 60,
             r : this.gameOptions.pixelsInMetr * 2,
-            color : '#263238',
+            color : '#1E88E5',
             maxLifeTime : 30,
             minLifeTime : 5,
-            imageSrc : "/dominator/imgs/radial.png"
+            shadowColor : '#64B5F6'
         }
-        
-        this.ctx = canvas.getContext('2d'); //todo
-        this.canvas = canvas; //todo
+
+        this.canvas = canvas;
         this.paper = paper;
         
         this.world = null;    
@@ -127,7 +128,7 @@ define([
             
             this._showBackGround();
             
-            this.intervalId = window.setInterval(this._update, 1000 / 60);
+            this.intervalId = window.setInterval(this._update, 1000 * this.interval);
         };
         
         this.startGame = function(){
@@ -223,9 +224,7 @@ define([
                 self.dominationArea.checkAndToggle();
             }
             
-            self._render();
-            
-            self.world.ClearForces();            
+            self._render();                  
         };            
         
                 
@@ -233,7 +232,7 @@ define([
             var self = this;
             this.players.all().forEach(function(player, index){
                 var playerPosition = player.body.GetPosition();
-                if(self.status == IN_PROCESS && self.dominationArea.isInArea(self._toPixels(playerPosition.x), self._toPixels(playerPosition.y))){
+                if(self.status == IN_PROCESS && self.dominationArea.isInArea(self.toPixels(playerPosition.x), self.toPixels(playerPosition.y))){
                     player.setIsFlashing(true);
                     player.addScore(1);
                 }
@@ -247,17 +246,8 @@ define([
             this.dominationArea.render();  
             this.players.render();  
             this.paper.view.draw();
-        }
-        
-
-        
-        this._clearCtx = function(){
-            this.ctx.clearRect(0, 0, this.gameOptions.width, this.gameOptions.height);  
-        }
-        
-        this._toPixels = function(metr){
-            return metr * this.gameOptions.pixelsInMetr;
-        }
+        }       
+      
         
         this._checkGameOver = function(){
             var gameIsOver = this.players.all().some(function(player){
@@ -280,6 +270,10 @@ define([
             rect.fillColor = this.gameOptions.backgroundColor;
         }
     };
+    
+    for(var property in Helper){
+        Game.prototype[property] = Helper[property]; 
+    }
         
     return Game;
 })
