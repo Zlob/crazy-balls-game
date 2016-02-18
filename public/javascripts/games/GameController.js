@@ -30,8 +30,8 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             
             this.addMenuEventListener();
 
-            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            var width = screen.width;
+            var height = screen.height;
             this.canvas = this._getCanvas(width, height);            
             
             this.game = new Game(this.canvas, {height: height, width: width}, this.playersNum);
