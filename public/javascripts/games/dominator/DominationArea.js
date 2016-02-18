@@ -25,12 +25,13 @@ define(function() {
         this.shadowColor = options.shadowColor;   
 
         this.status = DP_SHOWING;    
-        
+   
         this.circle = new this.paper.Path.Circle(new this.paper.Point(this.x, this.y), this.currentRadius);
         this.circle.strokeColor = this.color;
-        this.circle.strokeWidth = 5;
+        this.circle.strokeWidth = 1;
         this.circle.shadowColor = this.shadowColor;
-        this.circle.shadowBlur = 20;
+        this.circle.shadowBlur = 3;
+
         
     }
 
@@ -70,6 +71,8 @@ define(function() {
         this.circle.bounds.height = this.currentRadius*2;
         this.circle.position.x = this.x;
         this.circle.position.y = this.y;
+        this.circle.strokeWidth = this.currentRadius/12;
+        this.circle.shadowBlur = this.currentRadius/12*3;
     }
 
     DominationArea.prototype._move = function(x, y){
