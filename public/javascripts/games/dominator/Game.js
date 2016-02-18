@@ -28,7 +28,7 @@ define([
     var FPS_PAUSED = 0;
     var FPS_IN_PROCESS  = 1/30;
     
-    Game = function(canvas, playersNum){
+    Game = function(canvas, viewPort, playersNum){
         
         var self = this;
         
@@ -41,8 +41,8 @@ define([
         this.maxScore = 1000;      
         
         this.gameOptions = {
-            width : 1920,
-            height : 1080,
+            width : viewPort.width,
+            height : viewPort.height,
             pixelsInMetr : 30, 
             backgroundColor : '#000',
             backgroundAudio : '/dominator/sounds/music_1.ogg',

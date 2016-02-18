@@ -30,9 +30,11 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             
             this.addMenuEventListener();
 
-            this.canvas = this._getCanvas();
+            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            this.canvas = this._getCanvas(width, height);            
             
-            this.game = new Game(this.canvas, this.playersNum);
+            this.game = new Game(this.canvas, {height: height, width: width}, this.playersNum);
 
         }       
 
@@ -168,15 +170,15 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             return text;
         }
         
-        this._getCanvas = function(){
+        this._getCanvas = function(width, height){
             var canvas = document.createElement('canvas');
-            var width = document.createAttribute('width');
-            width.value = 1920;
-            canvas.setAttributeNode(width);
+            var widthAttr = document.createAttribute('width');
+            widthAttr.value = width;
+            canvas.setAttributeNode(widthAttr);
             
-            var height = document.createAttribute('height');
-            height.value = 1080;
-            canvas.setAttributeNode(height);
+            var heightAttr = document.createAttribute('height');
+            heightAttr.value = height;
+            canvas.setAttributeNode(heightAttr);
             canvas.setAttribute('id', 'canvas');
             return canvas;
         }
