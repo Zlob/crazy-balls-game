@@ -38,7 +38,7 @@ define(function() {
         return (Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) <= Math.pow(this.currentRadius, 2) );
     }
 
-    DominationArea.prototype.checkAndToggle = function(){
+    DominationArea.prototype.checkAndToggle = function(fps){
         if(this.status == DP_NORMAL){
             if(this.lifeTime < 0){
                 this.status = DP_HIDING;    
@@ -62,7 +62,7 @@ define(function() {
                 this.status = DP_NORMAL;
             }                
         } 
-        this.lifeTime--;
+        this.lifeTime-= fps*60;
     }
     
     DominationArea.prototype.render = function(){ 

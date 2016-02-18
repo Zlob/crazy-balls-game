@@ -221,7 +221,7 @@ define([
             self._calculateScore();    
             if(self.status == IN_PROCESS){     
                 self._checkGameOver();
-                self.dominationArea.checkAndToggle();
+                self.dominationArea.checkAndToggle(self.interval);
             }
             
             self._render();                  
