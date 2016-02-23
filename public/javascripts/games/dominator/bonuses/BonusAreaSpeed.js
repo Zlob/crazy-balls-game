@@ -23,6 +23,7 @@ define(['bonuses/BonusAreaProto'], function(BonusAreaProto) {
         this.deactivate = function(){
             window.clearTimeout(this.timeout);
             this.player.speedKoef = 1;
+            console.log('deactivate');
         }
 
     }       

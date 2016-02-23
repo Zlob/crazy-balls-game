@@ -131,6 +131,8 @@ define([
             
             this._showBackGround();
             this.intervalId = window.setInterval(this._update, 1000 * FPS_IN_PROCESS);
+            
+            window._gameFrames = 0;
         };
         
         this.startGame = function(){
@@ -219,10 +221,9 @@ define([
         
         
         this._update = function() {
-            self.world.Step(self.interval, 8, 3);            
-            self._calculateScore(); //todo replace to if below?
- 
-            if(self.status == IN_PROCESS){     
+            self.world.Step(self.interval, 8, 3);           
+            if(self.status == IN_PROCESS){  
+                self._calculateScore();
                 self._checkGameOver();
                 self.dominationArea.checkAndToggle(self.interval);
                 self.bonusAreaCollection.activateBonusArea();
@@ -237,7 +238,7 @@ define([
             var self = this;
             this.players.all().forEach(function(player, index){
                 var playerPosition = player.body.GetPosition();
-                if(self.status == IN_PROCESS && self.dominationArea.isInArea(self.toPixels(playerPosition.x), self.toPixels(playerPosition.y))){
+                if(self.dominationArea.isInArea(self.toPixels(playerPosition.x), self.toPixels(playerPosition.y))){
                     player.setIsFlashing(true);
                     player.addScore(1);
                 }
