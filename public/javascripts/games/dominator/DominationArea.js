@@ -62,7 +62,7 @@ define(function() {
                 this.lifeTime = this._getRandom(this.minLifeTime, this.maxLifeTime) * 60;
                 this.status = DP_NORMAL;
             }                
-        } 
+        }
         this.lifeTime-= fps*60;
     }
     

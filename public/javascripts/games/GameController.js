@@ -35,7 +35,6 @@ define(['io', 'swal', 'QRCode'], function (io, swal) {
             this.canvas = this._getCanvas(width, height);            
             
             this.game = new Game(this.canvas, {height: height, width: width}, this.playersNum);
-
         }       
 
         this.playrsAction = function(data){

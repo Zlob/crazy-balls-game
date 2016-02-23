@@ -39,13 +39,17 @@ define(['../Helper','box2d'], function(Helper) {
         this.scoreArea = scoreArea;
         this.scoreAudio = scoreAudio;   
         
+        this.speedKoef = 1;
+        
+        this.bonus = undefined;
+        
         this.circle = new this.paper.Path.Circle(new this.paper.Point(this.x, this.y), this.r);
         this.circle.strokeColor = this.borderColor;
         this.circle.fillColor = this.color;                
     }
     
     Player.prototype.move = function(x, y){
-        this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(x*6, y*6), this.body.GetPosition());
+        this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(x*6*this.speedKoef, y*6*this.speedKoef), this.body.GetPosition());
     }
 
     Player.prototype.fire = function(){
@@ -95,8 +99,10 @@ define(['../Helper','box2d'], function(Helper) {
     
     Player.prototype.render = function(){
         var position = this.body.GetPosition();
-        this.circle.position.x = this.toPixels(position.x);
-        this.circle.position.y = this.toPixels(position.y);
+        this.x = this.toPixels(position.x);
+        this.y = this.toPixels(position.y);
+        this.circle.position.x = this.x;
+        this.circle.position.y = this.y;
         this.scoreArea.render(this.getScore());
         this.circle.fillColor = this.currentColor;
     }
@@ -135,6 +141,30 @@ define(['../Helper','box2d'], function(Helper) {
 
         return bodyDef;
     }
+    
+    Player.prototype.addBonus = function(bonus){
+
+        if(bonus.type == 'speed' || bonus.type == 'size'){
+            if(this.bonus && this.bonus.activated){
+                this.bonus.deactivate();
+            }
+            this.bonus = bonus;
+            this.bonus.attach(this);
+            this.bonus.activate();
+            console.log(this.bonus.type);
+        }
+//         this.bonus = {type: bonus
+                      
+//                      };
+//         if(this.bonus.type == 'speed'){
+//             this.speedKoef = 3;
+//             return;
+//         }
+//         if(this.bonus.type == 'size'){
+//             this.circle.scale(2);
+//         }
+    }
+    
     
     for(var property in Helper){
         Player.prototype[property] = Helper[property]; 

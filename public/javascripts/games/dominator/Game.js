@@ -7,6 +7,7 @@ define([
     'Players',
     'DominationArea',
     'ScoreAreaFactory',
+    'BonusAreaCollection'
 
 ], function(box,
              Helper,
@@ -15,7 +16,8 @@ define([
              Walls, 
              Players, 
              DominationArea, 
-             ScoreAreaFactory
+             ScoreAreaFactory,
+             BonusAreaCollection
             )
 {
 
@@ -115,10 +117,11 @@ define([
             this.status = PAUSED;
             this.world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0, 0) ,true);    // doSleep флаг.               
             this.walls = new Walls(this.world, this.paper, this.gameOptions.width, this.gameOptions.height, this.wallsOptions).init();            
-            this.dominationArea = new DominationArea(this.paper, this.gameOptions.width, this.gameOptions.height, this.dominationAreaOptions);
-            
+            this.dominationArea = new DominationArea(this.paper, this.gameOptions.width, this.gameOptions.height, this.dominationAreaOptions);            
             var scoreAreaFactory = new ScoreAreaFactory(this.paper, this.gameOptions.width, this.gameOptions.height, this.scoreOptions);
             this.players = new Players(this.world, this.paper, scoreAreaFactory, this.gameOptions.width, this.gameOptions.height, this.playersOptions, this.scoreAudios).init(players);
+            
+            this.bonusAreaCollection = new BonusAreaCollection(this.paper, this.gameOptions.width, this.gameOptions.height, 2).init();
             
             this.gameOverCallback = gameOverCallback;    
             this._setCollisionListener();  
@@ -127,8 +130,7 @@ define([
             }
             
             this._showBackGround();
-            
-            this.intervalId = window.setInterval(this._update, 1000 * this.interval);
+            this.intervalId = window.setInterval(this._update, 1000 * FPS_IN_PROCESS);
         };
         
         this.startGame = function(){
@@ -218,10 +220,13 @@ define([
         
         this._update = function() {
             self.world.Step(self.interval, 8, 3);            
-            self._calculateScore();    
+            self._calculateScore(); //todo replace to if below?
+ 
             if(self.status == IN_PROCESS){     
                 self._checkGameOver();
                 self.dominationArea.checkAndToggle(self.interval);
+                self.bonusAreaCollection.activateBonusArea();
+                self._checkPlayersGetBonus();
             }
             
             self._render();                  
@@ -239,6 +244,13 @@ define([
                 else{
                     player.setIsFlashing(false);
                 }
+            });
+        }
+        
+        this._checkPlayersGetBonus = function(){
+            var self = this;
+            this.players.all().forEach(function(player, index){
+                self.bonusAreaCollection.checkPlayerGetBonus(player);
             });
         }
         
