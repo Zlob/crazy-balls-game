@@ -6,6 +6,9 @@ define(['io'], function(io) {
         this.gameId = gameId;
         this.playerId = playerId;   
         this.playerName = playerName;
+        
+        this.playerActions = {}
+        
         this.vector = {
             x : 0,
             y : 0
@@ -21,7 +24,7 @@ define(['io'], function(io) {
                 document.getElementById("doEvent").innerHTML = "DeviceOrientation";
                 // Listen for the deviceorientation event and handle the raw data
                 window.addEventListener('deviceorientation', function(eventData) {
-                    if(Date.now() - self.lastSend > 1000/60){
+                    if(Date.now() - self.lastSend > 1000/30){
                         self.lastSend = Date.now();
                         // gamma is the left-to-right tilt in degrees, where right is positive
                         var tiltLR = eventData.gamma;
@@ -34,12 +37,32 @@ define(['io'], function(io) {
 
                         // call our orientation event handler
                         self.deviceOrientationHandler(tiltLR, tiltFB, dir);
+                        self.playerActions.move = {}
                         self.playerMove(tiltFB, -1*tiltLR);
                     }
 
                 }, false);
+                
             } else {
-                document.getElementById("doEvent").innerHTML = "Not supported."
+                document.getElementById("doEvent").innerHTML = "Orientation Not supported."
+            }
+            
+            if (window.DeviceMotionEvent) {
+                window.addEventListener('devicemotion',function deviceMotionHandler(eventData) {
+                    var info, xyz = "[X, Y, Z]";
+
+                    // Grab the acceleration from the results
+                    var acceleration = eventData.acceleration;
+
+                    info = xyz.replace("X", acceleration.x);
+                    info = info.replace("Y", acceleration.y);
+                    info = info.replace("Z", acceleration.z);
+                    document.getElementById("moAccel").innerHTML = info;
+
+     
+                }, false);
+            } else {
+                document.getElementById("dmEvent").innerHTML = "Motion Not supported."
             }
 
 
